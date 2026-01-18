@@ -1,13 +1,10 @@
 package com.example.movementatlas.domain.usecase
 
 import com.example.movementatlas.domain.entity.*
-import com.example.movementatlas.domain.service.StateTransitionRules
 import org.junit.Assert.*
 import org.junit.Test
 
 class GetStepExitsUseCaseTest {
-
-    private val transitionRules = StateTransitionRules()
 
     @Test
     fun `returns resulting states by applying step to all valid entry states`() {
@@ -25,7 +22,7 @@ class GetStepExitsUseCaseTest {
             type = StepType.SOLO
         )
 
-        val useCase = GetStepExitsUseCase(transitionRules)
+        val useCase = GetStepExitsUseCase()
 
         // When
         val result = useCase(step)
@@ -47,7 +44,7 @@ class GetStepExitsUseCaseTest {
             type = StepType.SOLO
         )
 
-        val useCase = GetStepExitsUseCase(transitionRules)
+        val useCase = GetStepExitsUseCase()
 
         // When
         val result = useCase(step)
@@ -82,7 +79,7 @@ class GetStepExitsUseCaseTest {
             type = StepType.PARTNER
         )
 
-        val useCase = GetStepExitsUseCase(transitionRules)
+        val useCase = GetStepExitsUseCase()
 
         // When
         val result = useCase(step)

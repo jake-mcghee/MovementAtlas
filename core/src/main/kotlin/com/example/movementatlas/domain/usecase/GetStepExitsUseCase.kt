@@ -2,14 +2,11 @@ package com.example.movementatlas.domain.usecase
 
 import com.example.movementatlas.domain.entity.Step
 import com.example.movementatlas.domain.entity.State
-import com.example.movementatlas.domain.service.StateTransitionRules
 
-class GetStepExitsUseCase(
-    private val transitionRules: StateTransitionRules
-) {
+class GetStepExitsUseCase {
     operator fun invoke(step: Step): List<State> {
         return step.preconditions
-            .filter { state -> transitionRules.isValidTransition(state, step) }
-            .map { state -> transitionRules.applyTransition(state, step) }
+            .filter { state -> state.canTransitionTo(step) }
+            .map { state -> state.applyTransition(step) }
     }
 }

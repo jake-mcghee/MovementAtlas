@@ -2,7 +2,6 @@ package com.example.movementatlas.di
 
 import com.example.movementatlas.data.StepRepositoryAndroidImpl
 import com.example.movementatlas.domain.repository.StepRepository
-import com.example.movementatlas.domain.service.StateTransitionRules
 import com.example.movementatlas.domain.usecase.GenerateSequencesUseCase
 import com.example.movementatlas.domain.usecase.GetCompatibleNextStepsUseCase
 import com.example.movementatlas.domain.usecase.GetStepEntriesUseCase
@@ -25,41 +24,29 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideStateTransitionRules(): StateTransitionRules {
-        return StateTransitionRules()
-    }
-
-    @Provides
-    @Singleton
     fun provideGenerateSequencesUseCase(
-        stepRepository: StepRepository,
-        transitionRules: StateTransitionRules
+        stepRepository: StepRepository
     ): GenerateSequencesUseCase {
-        return GenerateSequencesUseCase(stepRepository, transitionRules)
+        return GenerateSequencesUseCase(stepRepository)
     }
 
     @Provides
     @Singleton
     fun provideGetCompatibleNextStepsUseCase(
-        stepRepository: StepRepository,
-        transitionRules: StateTransitionRules
+        stepRepository: StepRepository
     ): GetCompatibleNextStepsUseCase {
-        return GetCompatibleNextStepsUseCase(stepRepository, transitionRules)
+        return GetCompatibleNextStepsUseCase(stepRepository)
     }
 
     @Provides
     @Singleton
-    fun provideGetStepEntriesUseCase(
-        transitionRules: StateTransitionRules
-    ): GetStepEntriesUseCase {
-        return GetStepEntriesUseCase(transitionRules)
+    fun provideGetStepEntriesUseCase(): GetStepEntriesUseCase {
+        return GetStepEntriesUseCase()
     }
 
     @Provides
     @Singleton
-    fun provideGetStepExitsUseCase(
-        transitionRules: StateTransitionRules
-    ): GetStepExitsUseCase {
-        return GetStepExitsUseCase(transitionRules)
+    fun provideGetStepExitsUseCase(): GetStepExitsUseCase {
+        return GetStepExitsUseCase()
     }
 }

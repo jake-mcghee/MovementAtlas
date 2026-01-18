@@ -2,7 +2,6 @@ package com.example.movementatlas.domain.usecase
 
 import com.example.movementatlas.domain.entity.*
 import com.example.movementatlas.domain.repository.StepRepository
-import com.example.movementatlas.domain.service.StateTransitionRules
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.first
@@ -12,8 +11,6 @@ import org.junit.Assert.*
 import org.junit.Test
 
 class GenerateSequencesUseCaseTest {
-
-    private val transitionRules = StateTransitionRules()
 
     @Test
     fun `generates sequences from start state respecting maxLength`() = runTest {
@@ -45,7 +42,7 @@ class GenerateSequencesUseCaseTest {
             every { getAllSteps() } returns flowOf(allSteps)
         }
 
-        val useCase = GenerateSequencesUseCase(stepRepository, transitionRules)
+        val useCase = GenerateSequencesUseCase(stepRepository)
 
         // When
         val result = useCase(startState, maxLength).first()
@@ -77,7 +74,7 @@ class GenerateSequencesUseCaseTest {
             every { getAllSteps() } returns flowOf(listOf(step))
         }
 
-        val useCase = GenerateSequencesUseCase(stepRepository, transitionRules)
+        val useCase = GenerateSequencesUseCase(stepRepository)
 
         // When
         val result = useCase(startState, maxLength).first()
@@ -115,7 +112,7 @@ class GenerateSequencesUseCaseTest {
             every { getAllSteps() } returns flowOf(listOf(validStep, invalidStep))
         }
 
-        val useCase = GenerateSequencesUseCase(stepRepository, transitionRules)
+        val useCase = GenerateSequencesUseCase(stepRepository)
 
         // When
         val result = useCase(startState, 1).first()

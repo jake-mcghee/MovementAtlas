@@ -2,7 +2,6 @@ package com.example.movementatlas.domain.usecase
 
 import com.example.movementatlas.domain.entity.*
 import com.example.movementatlas.domain.repository.StepRepository
-import com.example.movementatlas.domain.service.StateTransitionRules
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
@@ -11,8 +10,6 @@ import org.junit.Assert.*
 import org.junit.Test
 
 class GetCompatibleNextStepsUseCaseTest {
-
-    private val transitionRules = StateTransitionRules()
 
     @Test
     fun `returns only steps that are valid transitions from given state`() = runTest {
@@ -43,7 +40,7 @@ class GetCompatibleNextStepsUseCaseTest {
             every { getAllSteps() } returns flowOf(allSteps)
         }
 
-        val useCase = GetCompatibleNextStepsUseCase(stepRepository, transitionRules)
+        val useCase = GetCompatibleNextStepsUseCase(stepRepository)
 
         // When
         val result = useCase(currentState)
@@ -70,7 +67,7 @@ class GetCompatibleNextStepsUseCaseTest {
             every { getAllSteps() } returns flowOf(listOf(step))
         }
 
-        val useCase = GetCompatibleNextStepsUseCase(stepRepository, transitionRules)
+        val useCase = GetCompatibleNextStepsUseCase(stepRepository)
 
         // When
         val result = useCase(currentState)
