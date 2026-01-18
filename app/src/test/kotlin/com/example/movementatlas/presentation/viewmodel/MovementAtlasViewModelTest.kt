@@ -54,32 +54,17 @@ class MovementAtlasViewModelTest {
     fun `generateSequences updates state with results`() = runTest(testDispatcher) {
         // Given
         val startStateOption = StartStateOption.LEFT
-        val startState = SoloState(WeightFoot.LEFT)
-        val step = Step(
-            id = "step-lr",
-            name = "Left to Right",
-            tags = emptyList(),
-            type = StepType.SOLO,
-            weightFootFrom = WeightFoot.LEFT,
-            weightFootTo = WeightFoot.RIGHT
-        )
-        val stepUnit = StepUnit(
-            id = "unit-1",
-            name = "Unit 1",
-            tags = emptyList(),
-            steps = listOf(step),
-            preconditions = listOf(State.Solo(startState)),
-            postState = State.Solo(SoloState(WeightFoot.RIGHT)),
-            type = StepType.SOLO
-        )
+        val startWeightFoot = WeightFoot.LEFT
+        val stepPattern = Step(direction = Direction.IN_PLACE)
+        val stepUnit = StepUnit.DistanceOne(step = stepPattern)
         val sequence = Sequence(
             stepUnits = listOf(stepUnit),
-            startState = State.Solo(startState),
-            endState = State.Solo(SoloState(WeightFoot.RIGHT))
+            startWeightFoot = startWeightFoot,
+            endWeightFoot = WeightFoot.RIGHT
         )
 
         val generateSequencesUseCase = mockk<GenerateSequencesUseCase>()
-        coEvery { generateSequencesUseCase(State.Solo(startState), any<Int>()) } returns flowOf(listOf(sequence))
+        coEvery { generateSequencesUseCase(startWeightFoot, any<Int>()) } returns flowOf(listOf(sequence))
         val getCompatibleNextStepUnitsUseCase = mockk<GetCompatibleNextStepUnitsUseCase>()
 
         val viewModel = MovementAtlasViewModel(generateSequencesUseCase, getCompatibleNextStepUnitsUseCase)
@@ -99,11 +84,11 @@ class MovementAtlasViewModelTest {
     fun `generateSequences handles errors`() = runTest(testDispatcher) {
         // Given
         val startStateOption = StartStateOption.LEFT
-        val startState = SoloState(WeightFoot.LEFT)
+        val startWeightFoot = WeightFoot.LEFT
         val errorMessage = "Error generating sequences"
 
         val generateSequencesUseCase = mockk<GenerateSequencesUseCase>()
-        coEvery { generateSequencesUseCase(State.Solo(startState), any<Int>()) } throws Exception(errorMessage)
+        coEvery { generateSequencesUseCase(startWeightFoot, any<Int>()) } throws Exception(errorMessage)
         val getCompatibleNextStepUnitsUseCase = mockk<GetCompatibleNextStepUnitsUseCase>()
 
         val viewModel = MovementAtlasViewModel(generateSequencesUseCase, getCompatibleNextStepUnitsUseCase)

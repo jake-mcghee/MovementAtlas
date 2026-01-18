@@ -1,12 +1,12 @@
 package com.example.movementatlas.domain.usecase
 
 import com.example.movementatlas.domain.entity.StepUnit
-import com.example.movementatlas.domain.entity.State
+import com.example.movementatlas.domain.entity.WeightFoot
 
 class GetStepUnitExitsUseCase {
-    operator fun invoke(stepUnit: StepUnit): List<State> {
-        return stepUnit.preconditions
-            .filter { state -> state.canTransitionTo(stepUnit) }
-            .map { state -> state.applyTransition(stepUnit) }
+    operator fun invoke(stepUnit: StepUnit): List<WeightFoot> {
+        return stepUnit.preconditions()
+            .filter { weightFoot -> stepUnit.canTransitionFrom(weightFoot) }
+            .map { weightFoot -> stepUnit.computePostState(weightFoot) }
     }
 }

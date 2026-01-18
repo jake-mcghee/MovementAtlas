@@ -2,10 +2,10 @@ package com.example.movementatlas.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.movementatlas.domain.entity.State
+import com.example.movementatlas.domain.entity.WeightFoot
 import com.example.movementatlas.domain.usecase.GenerateSequencesUseCase
 import com.example.movementatlas.domain.usecase.GetCompatibleNextStepUnitsUseCase
-import com.example.movementatlas.presentation.mapper.UiModelMapper.toDomainState
+import com.example.movementatlas.presentation.mapper.UiModelMapper.toWeightFoot
 import com.example.movementatlas.presentation.mapper.UiModelMapper.toUiModels
 import com.example.movementatlas.presentation.model.StartStateOption
 import com.example.movementatlas.presentation.ui.SimpleUiState
@@ -30,8 +30,8 @@ class MovementAtlasViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null, selectedStartState = startStateOption) }
             try {
-                val domainState = State.Solo(startStateOption.toDomainState())
-                generateSequencesUseCase(domainState, 5)
+                val startWeightFoot = startStateOption.toWeightFoot()
+                generateSequencesUseCase(startWeightFoot, 5)
                     .collect { sequences ->
                         _uiState.update {
                             it.copy(

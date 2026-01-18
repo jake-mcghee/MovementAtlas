@@ -7,117 +7,43 @@ import org.junit.Test
 class GetStepUnitEntriesUseCaseTest {
 
     @Test
-    fun `returns all states that satisfy step unit preconditions`() {
+    fun `returns all weight feet that can transition from step unit`() {
         // Given
-        val validState = State.Solo(SoloState(WeightFoot.LEFT))
-        val invalidState = State.Solo(SoloState(WeightFoot.RIGHT)) // Invalid because step starts from LEFT
-
-        val step = Step(
-            id = "step-lr",
-            name = "Left to Right",
-            tags = emptyList(),
-            type = StepType.SOLO,
-            weightFootFrom = WeightFoot.LEFT,
-            weightFootTo = WeightFoot.RIGHT
-        )
-
-        val stepUnit = StepUnit(
-            id = "unit-1",
-            name = "Test Unit",
-            tags = emptyList(),
-            steps = listOf(step),
-            preconditions = listOf(validState, invalidState),
-            postState = State.Solo(SoloState(WeightFoot.RIGHT)),
-            type = StepType.SOLO
-        )
+        val stepPattern = Step(direction = Direction.IN_PLACE)
+        val stepUnit = StepUnit.DistanceOne(step = stepPattern)
 
         val useCase = GetStepUnitEntriesUseCase()
 
         // When
         val result = useCase(stepUnit)
 
-        // Then - only validState should be returned (invalidState doesn't match step's starting foot)
-        assertEquals(1, result.size)
-        assertTrue(result.contains(validState))
-        assertFalse(result.contains(invalidState))
+        // Then - patterns can be applied from either foot
+        assertEquals(2, result.size)
+        assertTrue(result.contains(WeightFoot.LEFT))
+        assertTrue(result.contains(WeightFoot.RIGHT))
     }
 
     @Test
-    fun `returns empty list when step unit has no valid entry states`() {
+    fun `returns both feet for any step unit pattern`() {
         // Given
-        val step = Step(
-            id = "step-lr",
-            name = "Left to Right",
-            tags = emptyList(),
-            type = StepType.SOLO,
-            weightFootFrom = WeightFoot.LEFT,
-            weightFootTo = WeightFoot.RIGHT
-        )
-
-        val stepUnit = StepUnit(
-            id = "unit-1",
-            name = "Test Unit",
-            tags = emptyList(),
-            steps = listOf(step),
-            preconditions = emptyList(),
-            postState = State.Solo(SoloState(WeightFoot.RIGHT)),
-            type = StepType.SOLO
-        )
+        val stepPattern = Step(direction = Direction.IN_PLACE)
+        val stepUnit1 = StepUnit.DistanceOne(step = stepPattern)
+        val stepUnit2 = StepUnit.DistanceTwo(step1 = stepPattern, step2 = stepPattern)
+        val stepUnit3 = StepUnit.DistanceThree(step1 = stepPattern, step2 = stepPattern, step3 = stepPattern)
 
         val useCase = GetStepUnitEntriesUseCase()
 
         // When
-        val result = useCase(stepUnit)
+        val result1 = useCase(stepUnit1)
+        val result2 = useCase(stepUnit2)
+        val result3 = useCase(stepUnit3)
 
-        // Then
-        assertTrue(result.isEmpty())
-    }
-
-    @Test
-    fun `filters out states that fail type validation`() {
-        // Given - a solo state trying to enter a partner step unit
-        val soloState = State.Solo(SoloState(WeightFoot.LEFT))
-        val partnerState = State.Partner(
-            PartnerState(
-                lead = SoloState(WeightFoot.LEFT),
-                follow = SoloState(WeightFoot.RIGHT)
-            )
-        )
-
-        val step = Step(
-            id = "step-partner",
-            name = "Partner Step",
-            tags = emptyList(),
-            type = StepType.PARTNER,
-            leadFrom = WeightFoot.LEFT,
-            leadTo = WeightFoot.RIGHT,
-            followFrom = WeightFoot.RIGHT,
-            followTo = WeightFoot.LEFT
-        )
-
-        val stepUnit = StepUnit(
-            id = "unit-1",
-            name = "Partner Unit",
-            tags = emptyList(),
-            steps = listOf(step),
-            preconditions = listOf(soloState, partnerState),
-            postState = State.Partner(
-                PartnerState(
-                    lead = SoloState(WeightFoot.RIGHT),
-                    follow = SoloState(WeightFoot.LEFT)
-                )
-            ),
-            type = StepType.PARTNER
-        )
-
-        val useCase = GetStepUnitEntriesUseCase()
-
-        // When
-        val result = useCase(stepUnit)
-
-        // Then - only the partner state should be valid
-        assertEquals(1, result.size)
-        assertTrue(result.contains(partnerState))
-        assertFalse(result.contains(soloState))
+        // Then - all patterns work from both feet
+        assertEquals(2, result1.size)
+        assertEquals(2, result2.size)
+        assertEquals(2, result3.size)
+        assertTrue(result1.containsAll(listOf(WeightFoot.LEFT, WeightFoot.RIGHT)))
+        assertTrue(result2.containsAll(listOf(WeightFoot.LEFT, WeightFoot.RIGHT)))
+        assertTrue(result3.containsAll(listOf(WeightFoot.LEFT, WeightFoot.RIGHT)))
     }
 }

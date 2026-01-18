@@ -5,5 +5,4 @@ import kotlinx.coroutines.flow.Flow
 
 interface StepRepository {
     fun getAllSteps(): Flow<List<Step>>
-    suspend fun getStepById(id: String): Step?
 }

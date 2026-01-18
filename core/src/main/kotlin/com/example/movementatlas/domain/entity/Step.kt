@@ -1,40 +1,21 @@
 package com.example.movementatlas.domain.entity
 
 /**
- * Represents a single atomic weight transfer.
- * For SOLO steps: transfers weight from one foot to the other.
- * For PARTNER steps: transfers weight for both lead and follow.
+ * Represents a pattern for a single atomic weight transfer.
+ * Foot-agnostic pattern that can be applied starting from either foot.
+ * Always transfers weight to the opposite foot.
  */
 data class Step(
-    val id: String,
-    val name: String,
-    val tags: List<String>,
-    val type: StepType,
-    // For SOLO: weightFootFrom -> weightFootTo
-    val weightFootFrom: WeightFoot? = null,
-    val weightFootTo: WeightFoot? = null,
-    // For PARTNER: lead and follow weight transfers
-    val leadFrom: WeightFoot? = null,
-    val leadTo: WeightFoot? = null,
-    val followFrom: WeightFoot? = null,
-    val followTo: WeightFoot? = null
+    val direction: Direction
 ) {
-    init {
-        require(
-            (type == StepType.SOLO && weightFootFrom != null && weightFootTo != null && leadFrom == null && leadTo == null && followFrom == null && followTo == null) ||
-            (type == StepType.PARTNER && leadFrom != null && leadTo != null && followFrom != null && followTo != null && weightFootFrom == null && weightFootTo == null)
-        ) {
-            "Step must have valid weight transfers for its type"
+    /**
+     * Computes the ending foot when this step pattern is applied from the given starting foot.
+     * The ending foot is always the opposite of the starting foot.
+     */
+    fun endingFoot(startingFoot: WeightFoot): WeightFoot {
+        return when (startingFoot) {
+            WeightFoot.LEFT -> WeightFoot.RIGHT
+            WeightFoot.RIGHT -> WeightFoot.LEFT
         }
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Step) return false
-        return id == other.id
-    }
-
-    override fun hashCode(): Int {
-        return id.hashCode()
     }
 }

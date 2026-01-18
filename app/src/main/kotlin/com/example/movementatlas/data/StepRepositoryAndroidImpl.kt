@@ -20,10 +20,6 @@ class StepRepositoryAndroidImpl : StepRepository {
     private val steps: List<Step> = DefaultStepProvider.getDefaultSteps()
 
     override fun getAllSteps() = flowOf(steps)
-
-    override suspend fun getStepById(id: String): Step? {
-        return steps.find { it.id == id }
-    }
 }
 
 /**
@@ -44,8 +40,4 @@ class StepUnitRepositoryAndroidImpl(
     }
 
     override fun getAllStepUnits() = flowOf(stepUnits)
-
-    override suspend fun getStepUnitById(id: String): StepUnit? {
-        return stepUnits.find { it.id == id }
-    }
 }

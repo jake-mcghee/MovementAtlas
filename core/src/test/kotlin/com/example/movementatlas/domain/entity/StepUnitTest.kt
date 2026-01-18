@@ -8,49 +8,14 @@ class StepUnitTest {
     @Test
     fun `StepUnit is created with 1-3 steps`() {
         // Given
-        val step1 = Step(
-            id = "step-lr",
-            name = "Left to Right",
-            tags = emptyList(),
-            type = StepType.SOLO,
-            weightFootFrom = WeightFoot.LEFT,
-            weightFootTo = WeightFoot.RIGHT
-        )
-        val step2 = Step(
-            id = "step-rl",
-            name = "Right to Left",
-            tags = emptyList(),
-            type = StepType.SOLO,
-            weightFootFrom = WeightFoot.RIGHT,
-            weightFootTo = WeightFoot.LEFT
-        )
-        val step3 = Step(
-            id = "step-lr2",
-            name = "Left to Right",
-            tags = emptyList(),
-            type = StepType.SOLO,
-            weightFootFrom = WeightFoot.LEFT,
-            weightFootTo = WeightFoot.RIGHT
-        )
+        val stepPattern = Step(direction = Direction.IN_PLACE)
         
         // When
-        val singleStepUnit = StepUnit(
-            id = "unit-1",
-            name = "Single Step",
-            tags = emptyList(),
-            steps = listOf(step1),
-            preconditions = listOf(State.Solo(SoloState(WeightFoot.LEFT))),
-            postState = State.Solo(SoloState(WeightFoot.RIGHT)),
-            type = StepType.SOLO
-        )
-        val tripleStepUnit = StepUnit(
-            id = "unit-2",
-            name = "Triple Step",
-            tags = emptyList(),
-            steps = listOf(step1, step2, step3),
-            preconditions = listOf(State.Solo(SoloState(WeightFoot.LEFT))),
-            postState = State.Solo(SoloState(WeightFoot.RIGHT)),
-            type = StepType.SOLO
+        val singleStepUnit = StepUnit.DistanceOne(step = stepPattern)
+        val tripleStepUnit = StepUnit.DistanceThree(
+            step1 = stepPattern,
+            step2 = stepPattern,
+            step3 = stepPattern
         )
         
         // Then
@@ -58,117 +23,64 @@ class StepUnitTest {
         assertEquals(3, tripleStepUnit.steps.size)
     }
 
-    @Test(expected = IllegalArgumentException::class)
-    fun `StepUnit rejects empty steps`() {
-        // When/Then - should throw
-        StepUnit(
-            id = "unit-1",
-            name = "Empty Unit",
-            tags = emptyList(),
-            steps = emptyList(),
-            preconditions = emptyList(),
-            postState = State.Solo(SoloState(WeightFoot.LEFT)),
-            type = StepType.SOLO
-        )
-    }
-
-    @Test(expected = IllegalArgumentException::class)
-    fun `StepUnit rejects more than 3 steps`() {
+    @Test
+    fun `StepUnit patterns can be created with any step patterns`() {
         // Given
-        val step = Step(
-            id = "step-lr",
-            name = "Left to Right",
-            tags = emptyList(),
-            type = StepType.SOLO,
-            weightFootFrom = WeightFoot.LEFT,
-            weightFootTo = WeightFoot.RIGHT
+        val stepPattern = Step(direction = Direction.IN_PLACE)
+        
+        // When/Then - patterns always chain correctly when applied
+        val stepUnit = StepUnit.DistanceTwo(
+            step1 = stepPattern,
+            step2 = stepPattern
         )
         
-        // When/Then - should throw
-        StepUnit(
-            id = "unit-1",
-            name = "Too Many Steps",
-            tags = emptyList(),
-            steps = listOf(step, step, step, step),
-            preconditions = emptyList(),
-            postState = State.Solo(SoloState(WeightFoot.LEFT)),
-            type = StepType.SOLO
-        )
-    }
-
-    @Test(expected = IllegalArgumentException::class)
-    fun `StepUnit rejects steps that do not chain correctly`() {
-        // Given
-        val step1 = Step(
-            id = "step-lr",
-            name = "Left to Right",
-            tags = emptyList(),
-            type = StepType.SOLO,
-            weightFootFrom = WeightFoot.LEFT,
-            weightFootTo = WeightFoot.RIGHT
-        )
-        val step2 = Step(
-            id = "step-lr2",
-            name = "Left to Right",
-            tags = emptyList(),
-            type = StepType.SOLO,
-            weightFootFrom = WeightFoot.LEFT, // Should be RIGHT to chain from step1
-            weightFootTo = WeightFoot.RIGHT
-        )
-        
-        // When/Then - should throw
-        StepUnit(
-            id = "unit-1",
-            name = "Invalid Chain",
-            tags = emptyList(),
-            steps = listOf(step1, step2),
-            preconditions = emptyList(),
-            postState = State.Solo(SoloState(WeightFoot.RIGHT)),
-            type = StepType.SOLO
-        )
+        // Verify it computes correctly from LEFT
+        assertEquals(WeightFoot.LEFT, stepUnit.computePostState(WeightFoot.LEFT))
+        // Verify it computes correctly from RIGHT
+        assertEquals(WeightFoot.RIGHT, stepUnit.computePostState(WeightFoot.RIGHT))
     }
 
     @Test
-    fun `StepUnit equality is based on id`() {
+    fun `StepUnit equality is based on all properties`() {
         // Given
-        val step = Step(
-            id = "step-lr",
-            name = "Left to Right",
-            tags = emptyList(),
-            type = StepType.SOLO,
-            weightFootFrom = WeightFoot.LEFT,
-            weightFootTo = WeightFoot.RIGHT
-        )
-        val stepUnit1 = StepUnit(
-            id = "unit-1",
-            name = "Unit 1",
-            tags = emptyList(),
-            steps = listOf(step),
-            preconditions = emptyList(),
-            postState = State.Solo(SoloState(WeightFoot.RIGHT)),
-            type = StepType.SOLO
-        )
-        val stepUnit2 = StepUnit(
-            id = "unit-1",
-            name = "Different Name",
-            tags = listOf("tag"),
-            steps = listOf(step),
-            preconditions = emptyList(),
-            postState = State.Solo(SoloState(WeightFoot.LEFT)),
-            type = StepType.SOLO
-        )
-        val stepUnit3 = StepUnit(
-            id = "unit-2",
-            name = "Unit 1",
-            tags = emptyList(),
-            steps = listOf(step),
-            preconditions = emptyList(),
-            postState = State.Solo(SoloState(WeightFoot.RIGHT)),
-            type = StepType.SOLO
-        )
+        val stepPattern = Step(direction = Direction.IN_PLACE)
+        val differentStepPattern = Step(direction = Direction.FORWARD)
+        val stepUnit1 = StepUnit.DistanceOne(step = stepPattern)
+        val stepUnit2 = StepUnit.DistanceOne(step = stepPattern)
+        val stepUnit3 = StepUnit.DistanceOne(step = differentStepPattern)
         
         // Then
-        assertEquals(stepUnit1, stepUnit2)
-        assertNotEquals(stepUnit1, stepUnit3)
+        assertEquals(stepUnit1, stepUnit2) // Same properties = equal
+        assertNotEquals(stepUnit1, stepUnit3) // Different properties = not equal
+    }
+
+    @Test
+    fun `StepUnit canTransitionFrom works for any foot`() {
+        // Given
+        val stepPattern = Step(direction = Direction.IN_PLACE)
+        val stepUnit = StepUnit.DistanceOne(step = stepPattern)
+        
+        // When/Then - patterns can be applied from either foot
+        assertTrue(stepUnit.canTransitionFrom(WeightFoot.LEFT))
+        assertTrue(stepUnit.canTransitionFrom(WeightFoot.RIGHT))
+    }
+
+    @Test
+    fun `StepUnit computePostState calculates correctly`() {
+        // Given
+        val stepPattern = Step(direction = Direction.IN_PLACE)
+        val stepUnit = StepUnit.DistanceTwo(
+            step1 = stepPattern,
+            step2 = stepPattern
+        )
+        
+        // When starting from LEFT: L -> R -> L
+        val resultFromLeft = stepUnit.computePostState(WeightFoot.LEFT)
+        // When starting from RIGHT: R -> L -> R
+        val resultFromRight = stepUnit.computePostState(WeightFoot.RIGHT)
+        
+        // Then
+        assertEquals(WeightFoot.LEFT, resultFromLeft)
+        assertEquals(WeightFoot.RIGHT, resultFromRight)
     }
 }

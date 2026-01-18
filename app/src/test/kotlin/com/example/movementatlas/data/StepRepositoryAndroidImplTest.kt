@@ -18,33 +18,31 @@ class StepRepositoryAndroidImplTest {
         
         // Then
         assertTrue(result.isNotEmpty())
+        // Verify steps are patterns (have direction, no startingFoot)
+        result.forEach { step ->
+            assertNotNull(step.direction)
+        }
     }
 
     @Test
-    fun `returns step by ID`() = runTest {
-        // Given
-        val repository = StepRepositoryAndroidImpl()
-        val allSteps = repository.getAllSteps().first()
-        val expectedStep = allSteps.first()
-        
-        // When
-        val result = repository.getStepById(expectedStep.id)
-        
-        // Then
-        assertNotNull(result)
-        assertEquals(expectedStep.id, result?.id)
-        assertEquals(expectedStep.name, result?.name)
-    }
-
-    @Test
-    fun `returns null for missing step ID`() = runTest {
+    fun `returns step patterns with correct structure`() = runTest {
         // Given
         val repository = StepRepositoryAndroidImpl()
         
         // When
-        val result = repository.getStepById("non-existent-id")
+        val result = repository.getAllSteps().first()
         
         // Then
-        assertNull(result)
+        assertTrue(result.isNotEmpty())
+        // Verify all steps are patterns (foot-agnostic)
+        result.forEach { step ->
+            // Step should only have direction
+            assertNotNull(step.direction)
+            // Verify endingFoot method works
+            val endingFromLeft = step.endingFoot(WeightFoot.LEFT)
+            val endingFromRight = step.endingFoot(WeightFoot.RIGHT)
+            assertEquals(WeightFoot.RIGHT, endingFromLeft)
+            assertEquals(WeightFoot.LEFT, endingFromRight)
+        }
     }
 }

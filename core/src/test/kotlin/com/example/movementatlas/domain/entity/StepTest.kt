@@ -6,99 +6,36 @@ import org.junit.Test
 class StepTest {
 
     @Test
-    fun `Step is created with all required properties for solo`() {
+    fun `Step pattern is created with direction only`() {
         // Given
-        val id = "step-1"
-        val name = "Left to Right"
-        val tags = listOf("beginner", "solo")
-        val type = StepType.SOLO
-        val weightFootFrom = WeightFoot.LEFT
-        val weightFootTo = WeightFoot.RIGHT
+        val direction = Direction.IN_PLACE
         
         // When
-        val step = Step(
-            id = id,
-            name = name,
-            tags = tags,
-            type = type,
-            weightFootFrom = weightFootFrom,
-            weightFootTo = weightFootTo
-        )
+        val step = Step(direction = direction)
         
         // Then
-        assertEquals(id, step.id)
-        assertEquals(name, step.name)
-        assertEquals(tags, step.tags)
-        assertEquals(type, step.type)
-        assertEquals(weightFootFrom, step.weightFootFrom)
-        assertEquals(weightFootTo, step.weightFootTo)
+        assertEquals(direction, step.direction)
     }
 
     @Test
-    fun `Step is created with all required properties for partner`() {
+    fun `Step endingFoot is always opposite of startingFoot`() {
         // Given
-        val id = "step-1"
-        val name = "Partner Step"
-        val tags = listOf("beginner", "partner")
-        val type = StepType.PARTNER
-        val leadFrom = WeightFoot.LEFT
-        val leadTo = WeightFoot.RIGHT
-        val followFrom = WeightFoot.RIGHT
-        val followTo = WeightFoot.LEFT
+        val step = Step(direction = Direction.IN_PLACE)
         
-        // When
-        val step = Step(
-            id = id,
-            name = name,
-            tags = tags,
-            type = type,
-            leadFrom = leadFrom,
-            leadTo = leadTo,
-            followFrom = followFrom,
-            followTo = followTo
-        )
-        
-        // Then
-        assertEquals(id, step.id)
-        assertEquals(name, step.name)
-        assertEquals(tags, step.tags)
-        assertEquals(type, step.type)
-        assertEquals(leadFrom, step.leadFrom)
-        assertEquals(leadTo, step.leadTo)
-        assertEquals(followFrom, step.followFrom)
-        assertEquals(followTo, step.followTo)
+        // When/Then
+        assertEquals(WeightFoot.RIGHT, step.endingFoot(WeightFoot.LEFT))
+        assertEquals(WeightFoot.LEFT, step.endingFoot(WeightFoot.RIGHT))
     }
 
     @Test
-    fun `Step equality is based on id`() {
+    fun `Step equality is based on direction`() {
         // Given
-        val step1 = Step(
-            id = "step-1",
-            name = "Step 1",
-            tags = emptyList(),
-            type = StepType.SOLO,
-            weightFootFrom = WeightFoot.LEFT,
-            weightFootTo = WeightFoot.RIGHT
-        )
-        val step2 = Step(
-            id = "step-1",
-            name = "Different Name",
-            tags = listOf("tag"),
-            type = StepType.SOLO,
-            weightFootFrom = WeightFoot.RIGHT,
-            weightFootTo = WeightFoot.LEFT
-        )
-        val step3 = Step(
-            id = "step-2",
-            name = "Step 1",
-            tags = emptyList(),
-            type = StepType.SOLO,
-            weightFootFrom = WeightFoot.LEFT,
-            weightFootTo = WeightFoot.RIGHT
-        )
+        val step1 = Step(direction = Direction.IN_PLACE)
+        val step2 = Step(direction = Direction.IN_PLACE)
+        val step3 = Step(direction = Direction.FORWARD)
         
         // Then
-        assertEquals(step1, step2)
-        assertNotEquals(step1, step3)
+        assertEquals(step1, step2) // Same direction = equal
+        assertNotEquals(step1, step3) // Different direction = not equal
     }
 }
