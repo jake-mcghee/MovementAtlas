@@ -16,9 +16,7 @@ class GenerateSequencesUseCase(
         val sequences = mutableListOf<Sequence>()
         
         fun generate(currentWeightFoot: WeightFoot, currentSequence: List<StepUnit>, depth: Int) {
-            val compatibleStepUnits = allStepUnits.filter { stepUnit ->
-                stepUnit.canTransitionFrom(currentWeightFoot)
-            }
+            val compatibleStepUnits = allStepUnits
             
             // If no compatible step units or we've reached max length, add current sequence and stop
             if (compatibleStepUnits.isEmpty() || depth >= maxLength) {

@@ -54,17 +54,6 @@ class StepUnitTest {
     }
 
     @Test
-    fun `StepUnit canTransitionFrom works for any foot`() {
-        // Given
-        val stepPattern = Step(direction = Direction.IN_PLACE)
-        val stepUnit = StepUnit.DistanceOne(step = stepPattern)
-        
-        // When/Then - patterns can be applied from either foot
-        assertTrue(stepUnit.canTransitionFrom(WeightFoot.LEFT))
-        assertTrue(stepUnit.canTransitionFrom(WeightFoot.RIGHT))
-    }
-
-    @Test
     fun `StepUnit computePostState calculates correctly`() {
         // Given
         val stepPattern = Step(direction = Direction.IN_PLACE)

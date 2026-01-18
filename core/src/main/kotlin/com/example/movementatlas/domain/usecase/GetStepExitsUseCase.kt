@@ -5,8 +5,8 @@ import com.example.movementatlas.domain.entity.WeightFoot
 
 class GetStepUnitExitsUseCase {
     operator fun invoke(stepUnit: StepUnit): List<WeightFoot> {
-        return stepUnit.preconditions()
-            .filter { weightFoot -> stepUnit.canTransitionFrom(weightFoot) }
-            .map { weightFoot -> stepUnit.computePostState(weightFoot) }
+        // StepUnits always end on the opposite foot from where they started
+        // Since they can start from either foot, they can end on either foot
+        return listOf(WeightFoot.LEFT, WeightFoot.RIGHT)
     }
 }

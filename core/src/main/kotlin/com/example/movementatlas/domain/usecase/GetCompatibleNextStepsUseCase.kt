@@ -10,8 +10,6 @@ class GetCompatibleNextStepUnitsUseCase(
 ) {
     suspend operator fun invoke(fromWeightFoot: WeightFoot): List<StepUnit> {
         val allStepUnits = stepUnitRepository.getAllStepUnits().first()
-        return allStepUnits.filter { stepUnit ->
-            stepUnit.canTransitionFrom(fromWeightFoot)
-        }
+        return allStepUnits
     }
 }

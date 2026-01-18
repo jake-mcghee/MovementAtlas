@@ -20,41 +20,14 @@ sealed class StepUnit {
     /**
      * Computes the ending weight foot after applying this StepUnit pattern
      * starting from the given initial weight foot.
-     * Steps are applied sequentially, each transferring to the opposite foot.
      * 
-     * **Domain Invariant**: This method must always return the opposite foot from the starting foot.
-     * This ensures all StepUnits (DistanceOne, DistanceTwo, DistanceThree) end on the opposite foot.
+     * **Domain Invariant**: All StepUnits must end on the opposite foot from where they started.
      */
-    open fun computePostState(initialWeightFoot: WeightFoot): WeightFoot {
-        var currentFoot = initialWeightFoot
-        steps.forEach { step ->
-            currentFoot = step.endingFoot(currentFoot)
+    fun computePostState(initialWeightFoot: WeightFoot): WeightFoot {
+        return when (initialWeightFoot) {
+            WeightFoot.LEFT -> WeightFoot.RIGHT
+            WeightFoot.RIGHT -> WeightFoot.LEFT
         }
-        val result = currentFoot
-        
-        // Validate domain invariant: all StepUnits must end on opposite foot
-        require(result != initialWeightFoot) {
-            "StepUnit invariant violation: must end on opposite foot from starting foot. " +
-            "Started on $initialWeightFoot but ended on $result"
-        }
-        
-        return result
-    }
-
-    /**
-     * Checks if this StepUnit pattern can be applied from the given weight foot.
-     * Since patterns are foot-agnostic, they can always be applied from any foot.
-     */
-    fun canTransitionFrom(weightFoot: WeightFoot): Boolean {
-        return true // Patterns can be applied from any foot
-    }
-    
-    /**
-     * Gets the valid starting weight feet for this StepUnit pattern.
-     * Since patterns are foot-agnostic, they can start from either foot.
-     */
-    fun preconditions(): List<WeightFoot> {
-        return listOf(WeightFoot.LEFT, WeightFoot.RIGHT)
     }
 
     data class DistanceOne(
@@ -73,18 +46,6 @@ sealed class StepUnit {
         // DistanceTwo semantic: After step2, weight returns to first foot which is IN_PLACE (doesn't travel).
         // This is the key differentiator from DistanceThree (where first foot travels twice).
         override val steps: List<Step> = listOf(step1, step2)
-        
-        /**
-         * Override to enforce domain invariant: DistanceTwo always ends on opposite foot.
-         * The semantic is that after step2, weight returns to first foot (in place),
-         * and the movement pattern ensures ending on opposite foot.
-         */
-        override fun computePostState(initialWeightFoot: WeightFoot): WeightFoot {
-            return when (initialWeightFoot) {
-                WeightFoot.LEFT -> WeightFoot.RIGHT
-                WeightFoot.RIGHT -> WeightFoot.LEFT
-            }
-        }
     }
     
     data class DistanceThree(
@@ -94,9 +55,8 @@ sealed class StepUnit {
     ) : StepUnit() {
         // step2 is a weight transfer - direction doesn't matter, always IN_PLACE
         // Only step1 and step3 directions are meaningful
-        private val weightTransferStep = Step(Direction.IN_PLACE)
+        private val controlStep = Step(Direction.IN_PLACE)
         
-        override val steps: List<Step> = listOf(step1, weightTransferStep, step3)
-        // L -> R -> L -> R = ends on opposite foot ✓ (natural behavior, no override needed)
+        override val steps: List<Step> = listOf(step1, controlStep, step3)
     }
 }
