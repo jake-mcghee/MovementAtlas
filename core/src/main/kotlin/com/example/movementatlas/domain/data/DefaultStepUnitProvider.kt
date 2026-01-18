@@ -16,12 +16,12 @@ object DefaultStepUnitProvider {
         return listOf(
             // Single step pattern - can be applied from either foot
             StepUnit.DistanceOne(step = stepPattern),
-            // Double step pattern (alternating) - can be applied from either foot
-            // When applied from LEFT: L->R->L, when applied from RIGHT: R->L->R
+            // Double step pattern - both step1 and step2 directions matter
+            // After step2, weight returns to first foot (in place), then transfers to opposite foot
             StepUnit.DistanceTwo(step1 = stepPattern, step2 = stepPattern),
-            // Triple step pattern (LRL when from LEFT, RLR when from RIGHT)
-            // Pattern: step, step, step (alternating naturally)
-            StepUnit.DistanceThree(step1 = stepPattern, step2 = stepPattern, step3 = stepPattern)
+            // Triple step pattern - only step1 and step3 directions matter
+            // step2 is a weight transfer (direction doesn't matter, computed internally)
+            StepUnit.DistanceThree(step1 = stepPattern, step3 = stepPattern)
         )
     }
 }

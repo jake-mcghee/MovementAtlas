@@ -44,7 +44,7 @@ class GetStepUnitExitsUseCaseTest {
     fun `returns correct exit states for DistanceThree pattern`() {
         // Given
         val stepPattern = Step(direction = Direction.IN_PLACE)
-        val stepUnit = StepUnit.DistanceThree(step1 = stepPattern, step2 = stepPattern, step3 = stepPattern)
+        val stepUnit = StepUnit.DistanceThree(step1 = stepPattern, step3 = stepPattern)
 
         val useCase = GetStepUnitExitsUseCase()
 

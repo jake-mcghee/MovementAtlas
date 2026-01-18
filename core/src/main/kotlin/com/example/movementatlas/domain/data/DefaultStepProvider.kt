@@ -8,9 +8,9 @@ import com.example.movementatlas.domain.entity.*
  */
 object DefaultStepProvider {
 
-    fun getDefaultSteps(): List<Step> = listOf(
+    fun getDefaultSteps(): List<Step> = Direction.values().map { direction ->
         // Atomic step pattern - single weight transfer
         // This pattern can be applied starting from either foot
-        Step(direction = Direction.IN_PLACE)
-    )
+        Step(direction = direction)
+    }
 }

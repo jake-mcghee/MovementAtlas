@@ -1,8 +1,6 @@
 package com.example.movementatlas.di
 
-import com.example.movementatlas.data.StepRepositoryAndroidImpl
 import com.example.movementatlas.data.StepUnitRepositoryAndroidImpl
-import com.example.movementatlas.domain.repository.StepRepository
 import com.example.movementatlas.domain.repository.StepUnitRepository
 import com.example.movementatlas.domain.usecase.GenerateSequencesUseCase
 import com.example.movementatlas.domain.usecase.GetCompatibleNextStepUnitsUseCase
@@ -20,16 +18,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideStepRepository(): StepRepository {
-        return StepRepositoryAndroidImpl()
-    }
-
-    @Provides
-    @Singleton
-    fun provideStepUnitRepository(
-        stepRepository: StepRepository
-    ): StepUnitRepository {
-        return StepUnitRepositoryAndroidImpl(stepRepository)
+    fun provideStepUnitRepository(): StepUnitRepository {
+        return StepUnitRepositoryAndroidImpl()
     }
 
     @Provides

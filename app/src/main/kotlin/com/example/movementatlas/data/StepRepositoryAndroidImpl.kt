@@ -2,25 +2,9 @@ package com.example.movementatlas.data
 
 import com.example.movementatlas.domain.data.DefaultStepProvider
 import com.example.movementatlas.domain.data.DefaultStepUnitProvider
-import com.example.movementatlas.domain.entity.Step
 import com.example.movementatlas.domain.entity.StepUnit
-import com.example.movementatlas.domain.repository.StepRepository
 import com.example.movementatlas.domain.repository.StepUnitRepository
 import kotlinx.coroutines.flow.flowOf
-
-/**
- * Android implementation of StepRepository.
- * Uses the default step definitions from the core module.
- *
- * This implementation can be extended to load steps from
- * a database, network, or other Android-specific sources.
- */
-class StepRepositoryAndroidImpl : StepRepository {
-
-    private val steps: List<Step> = DefaultStepProvider.getDefaultSteps()
-
-    override fun getAllSteps() = flowOf(steps)
-}
 
 /**
  * Android implementation of StepUnitRepository.
@@ -29,9 +13,7 @@ class StepRepositoryAndroidImpl : StepRepository {
  * This implementation can be extended to load step units from
  * a database, network, or other Android-specific sources.
  */
-class StepUnitRepositoryAndroidImpl(
-    private val stepRepository: StepRepository
-) : StepUnitRepository {
+class StepUnitRepositoryAndroidImpl : StepUnitRepository {
 
     private val stepUnits: List<StepUnit> by lazy {
         // Get steps directly from DefaultStepProvider since we need them synchronously
