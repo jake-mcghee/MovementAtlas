@@ -6,6 +6,6 @@ package com.example.movementatlas.domain.entity
 enum class Rotation {
     ROTATION_90,   // 90 degrees
     ROTATION_180,  // 180 degrees
-    ROTATION_270,  // 270 degrees (180 + 90)
+    ROTATION_270,  // 270 degrees (3/4 turn)
     ROTATION_360   // 360 degrees (full rotation)
 }

@@ -19,9 +19,8 @@ object DefaultStepUnitProvider {
             // Double step pattern - both step1 and step2 directions matter
             // After step2, weight returns to first foot (in place), then transfers to opposite foot
             StepUnit.DistanceTwo(step1 = stepPattern, step2 = stepPattern),
-            // Triple step pattern - only step1 and step3 directions matter
-            // step2 is a weight transfer (direction doesn't matter, computed internally)
-            StepUnit.DistanceThree(step1 = stepPattern, step3 = stepPattern)
+            // Triple step pattern - all three steps have meaningful directions
+            StepUnit.DistanceThree(step1 = stepPattern, step2 = stepPattern, step3 = stepPattern)
         )
     }
 }
