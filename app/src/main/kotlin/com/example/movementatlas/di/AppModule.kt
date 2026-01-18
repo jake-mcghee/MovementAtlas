@@ -1,7 +1,8 @@
 package com.example.movementatlas.di
 
-import com.example.movementatlas.data.StepUnitRepositoryAndroidImpl
-import com.example.movementatlas.domain.repository.StepUnitRepository
+import com.example.movementatlas.domain.data.DefaultStepProvider
+import com.example.movementatlas.domain.data.DefaultStepUnitProvider
+import com.example.movementatlas.domain.entity.StepUnit
 import com.example.movementatlas.domain.usecase.GenerateSequencesUseCase
 import com.example.movementatlas.domain.usecase.GetCompatibleNextStepUnitsUseCase
 import com.example.movementatlas.domain.usecase.GetStepUnitEntriesUseCase
@@ -18,24 +19,25 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideStepUnitRepository(): StepUnitRepository {
-        return StepUnitRepositoryAndroidImpl()
+    fun provideStepUnits(): List<StepUnit> {
+        val steps = DefaultStepProvider.getDefaultSteps()
+        return DefaultStepUnitProvider.getDefaultStepUnits(steps)
     }
 
     @Provides
     @Singleton
     fun provideGenerateSequencesUseCase(
-        stepUnitRepository: StepUnitRepository
+        stepUnits: List<StepUnit>
     ): GenerateSequencesUseCase {
-        return GenerateSequencesUseCase(stepUnitRepository)
+        return GenerateSequencesUseCase(stepUnits)
     }
 
     @Provides
     @Singleton
     fun provideGetCompatibleNextStepUnitsUseCase(
-        stepUnitRepository: StepUnitRepository
+        stepUnits: List<StepUnit>
     ): GetCompatibleNextStepUnitsUseCase {
-        return GetCompatibleNextStepUnitsUseCase(stepUnitRepository)
+        return GetCompatibleNextStepUnitsUseCase(stepUnits)
     }
 
     @Provides

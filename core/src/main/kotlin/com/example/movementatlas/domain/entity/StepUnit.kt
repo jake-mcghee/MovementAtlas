@@ -42,19 +42,20 @@ sealed class StepUnit {
         val step2: Step,
         override val rotation: Rotation? = null
     ) : StepUnit() {
-        // Both step1 and step2 have meaningful directions
-        // DistanceTwo semantic: After step2, weight returns to first foot which is IN_PLACE (doesn't travel).
+        // DistanceTwo: After step2, weight returns to first foot which is IN_PLACE (doesn't travel).
         // This is the key differentiator from DistanceThree (where first foot travels twice).
         override val steps: List<Step> = listOf(step1, step2)
     }
     
     data class DistanceThree(
         val step1: Step,
-        val step2: Step,
         val step3: Step,
         override val rotation: Rotation? = null
     ) : StepUnit() {
-        // All three steps have meaningful directions
-        override val steps: List<Step> = listOf(step1, step2, step3)
+        // step2 is a weight transfer - direction doesn't matter, always IN_PLACE
+        // Only step1 and step3 directions are meaningful
+        private val controlStep = Step(Direction.IN_PLACE)
+        
+        override val steps: List<Step> = listOf(step1, controlStep, step3)
     }
 }

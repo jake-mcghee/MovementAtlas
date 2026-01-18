@@ -14,7 +14,6 @@ class StepUnitTest {
         val singleStepUnit = StepUnit.DistanceOne(step = stepPattern)
         val tripleStepUnit = StepUnit.DistanceThree(
             step1 = stepPattern,
-            step2 = stepPattern,
             step3 = stepPattern
         )
         
@@ -101,38 +100,35 @@ class StepUnitTest {
     }
 
     @Test
-    fun `DistanceThree stores all three steps with meaningful directions`() {
+    fun `DistanceThree only stores step1 and step3 step2 is computed internally`() {
         // Given
         val step1 = Step(direction = Direction.FORWARD)
-        val step2 = Step(direction = Direction.IN_PLACE)
         val step3 = Step(direction = Direction.BACKWARD)
         
         // When
-        val stepUnit = StepUnit.DistanceThree(step1 = step1, step2 = step2, step3 = step3)
+        val stepUnit = StepUnit.DistanceThree(step1 = step1, step3 = step3)
         
-        // Then - all three steps are stored and accessible
+        // Then - step2 is computed internally as weight transfer (IN_PLACE)
         assertEquals(3, stepUnit.steps.size)
         assertEquals(step1, stepUnit.steps[0])
-        assertEquals(step2, stepUnit.steps[1])
+        assertEquals(Direction.IN_PLACE, stepUnit.steps[1].direction) // step2 is computed
         assertEquals(step3, stepUnit.steps[2])
     }
 
     @Test
-    fun `DistanceThree equality is based on all three steps`() {
-        // Given
+    fun `DistanceThree step2 is always IN_PLACE regardless of input`() {
+        // Given - step2 is computed internally, so it's always the same
         val step1 = Step(direction = Direction.FORWARD)
-        val step2 = Step(direction = Direction.IN_PLACE)
         val step3 = Step(direction = Direction.BACKWARD)
-        val differentStep2 = Step(direction = Direction.FORWARD)
         
-        // When - create two DistanceThree with same steps
-        val stepUnit1 = StepUnit.DistanceThree(step1 = step1, step2 = step2, step3 = step3)
-        val stepUnit2 = StepUnit.DistanceThree(step1 = step1, step2 = step2, step3 = step3)
-        val stepUnit3 = StepUnit.DistanceThree(step1 = step1, step2 = differentStep2, step3 = step3)
+        // When - create two DistanceThree with same step1 and step3
+        val stepUnit1 = StepUnit.DistanceThree(step1 = step1, step3 = step3)
+        val stepUnit2 = StepUnit.DistanceThree(step1 = step1, step3 = step3)
         
-        // Then - same steps = equal, different step2 = not equal
+        // Then - they are equal and step2 is always IN_PLACE
         assertEquals(stepUnit1, stepUnit2)
-        assertNotEquals(stepUnit1, stepUnit3)
+        assertEquals(Direction.IN_PLACE, stepUnit1.steps[1].direction)
+        assertEquals(Direction.IN_PLACE, stepUnit2.steps[1].direction)
     }
 
     @Test
@@ -141,7 +137,7 @@ class StepUnitTest {
         val stepPattern = Step(direction = Direction.IN_PLACE)
         val distanceOne = StepUnit.DistanceOne(step = stepPattern)
         val distanceTwo = StepUnit.DistanceTwo(step1 = stepPattern, step2 = stepPattern)
-        val distanceThree = StepUnit.DistanceThree(step1 = stepPattern, step2 = stepPattern, step3 = stepPattern)
+        val distanceThree = StepUnit.DistanceThree(step1 = stepPattern, step3 = stepPattern)
         
         // When/Then - DistanceOne from LEFT ends on RIGHT
         assertEquals(WeightFoot.RIGHT, distanceOne.computePostState(WeightFoot.LEFT))

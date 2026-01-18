@@ -1,11 +1,7 @@
 package com.example.movementatlas.domain.usecase
 
 import com.example.movementatlas.domain.entity.*
-import com.example.movementatlas.domain.repository.StepUnitRepository
-import io.mockk.every
-import io.mockk.mockk
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.*
 import org.junit.Test
@@ -24,11 +20,7 @@ class GenerateSequencesUseCaseTest {
 
         val allStepUnits = listOf(stepUnit1, stepUnit2)
 
-        val stepUnitRepository = mockk<StepUnitRepository> {
-            every { getAllStepUnits() } returns flowOf(allStepUnits)
-        }
-
-        val useCase = GenerateSequencesUseCase(stepUnitRepository)
+        val useCase = GenerateSequencesUseCase(allStepUnits)
 
         // When
         val result = useCase(startWeightFoot, maxLength).first()
@@ -50,11 +42,7 @@ class GenerateSequencesUseCaseTest {
         val stepPattern = Step(direction = Direction.IN_PLACE)
         val stepUnit = StepUnit.DistanceOne(step = stepPattern)
 
-        val stepUnitRepository = mockk<StepUnitRepository> {
-            every { getAllStepUnits() } returns flowOf(listOf(stepUnit))
-        }
-
-        val useCase = GenerateSequencesUseCase(stepUnitRepository)
+        val useCase = GenerateSequencesUseCase(listOf(stepUnit))
 
         // When
         val result = useCase(startWeightFoot, maxLength).first()
@@ -72,11 +60,7 @@ class GenerateSequencesUseCaseTest {
         val stepPattern = Step(direction = Direction.IN_PLACE)
         val stepUnit = StepUnit.DistanceOne(step = stepPattern)
 
-        val stepUnitRepository = mockk<StepUnitRepository> {
-            every { getAllStepUnits() } returns flowOf(listOf(stepUnit))
-        }
-
-        val useCase = GenerateSequencesUseCase(stepUnitRepository)
+        val useCase = GenerateSequencesUseCase(listOf(stepUnit))
 
         // When
         val result = useCase(startWeightFoot, 1).first()
@@ -98,13 +82,9 @@ class GenerateSequencesUseCaseTest {
         val stepPattern = Step(direction = Direction.IN_PLACE)
         val stepUnit1 = StepUnit.DistanceOne(step = stepPattern)
         val stepUnit2 = StepUnit.DistanceTwo(step1 = stepPattern, step2 = stepPattern)
-        val stepUnit3 = StepUnit.DistanceThree(step1 = stepPattern, step2 = stepPattern, step3 = stepPattern)
+        val stepUnit3 = StepUnit.DistanceThree(step1 = stepPattern, step3 = stepPattern)
 
-        val stepUnitRepository = mockk<StepUnitRepository> {
-            every { getAllStepUnits() } returns flowOf(listOf(stepUnit1, stepUnit2, stepUnit3))
-        }
-
-        val useCase = GenerateSequencesUseCase(stepUnitRepository)
+        val useCase = GenerateSequencesUseCase(listOf(stepUnit1, stepUnit2, stepUnit3))
 
         // When
         val result = useCase(startWeightFoot, 1).first()
