@@ -2,8 +2,7 @@ package com.example.movementatlas.di
 
 import com.example.movementatlas.data.StepRepositoryAndroidImpl
 import com.example.movementatlas.domain.repository.StepRepository
-import com.example.movementatlas.domain.repository.StateTransitionRules
-import com.example.movementatlas.domain.service.StateTransitionRulesImpl
+import com.example.movementatlas.domain.service.StateTransitionRules
 import com.example.movementatlas.domain.usecase.GenerateSequencesUseCase
 import com.example.movementatlas.domain.usecase.GetCompatibleNextStepsUseCase
 import com.example.movementatlas.domain.usecase.GetStepEntriesUseCase
@@ -27,8 +26,7 @@ object AppModule {
     @Provides
     @Singleton
     fun provideStateTransitionRules(): StateTransitionRules {
-        // Transition rules are pure domain logic, no platform-specific implementation needed
-        return StateTransitionRulesImpl()
+        return StateTransitionRules()
     }
 
     @Provides

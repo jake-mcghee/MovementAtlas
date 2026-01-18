@@ -2,7 +2,7 @@ package com.example.movementatlas.domain.usecase
 
 import com.example.movementatlas.domain.entity.Step
 import com.example.movementatlas.domain.entity.State
-import com.example.movementatlas.domain.repository.StateTransitionRules
+import com.example.movementatlas.domain.service.StateTransitionRules
 
 class GetStepExitsUseCase(
     private val transitionRules: StateTransitionRules

@@ -3,16 +3,14 @@ package com.example.movementatlas.domain.service
 import com.example.movementatlas.domain.entity.State
 import com.example.movementatlas.domain.entity.Step
 import com.example.movementatlas.domain.entity.StepType
-import com.example.movementatlas.domain.repository.StateTransitionRules
 
 /**
- * Default implementation of StateTransitionRules.
- * This contains the core domain logic for validating and applying transitions.
- * Platform-specific implementations can extend or compose this if needed.
+ * Contains the core domain logic for validating and applying state transitions.
+ * This is pure business logic with no external dependencies.
  */
-class StateTransitionRulesImpl : StateTransitionRules {
+class StateTransitionRules {
 
-    override fun isValidTransition(from: State, step: Step): Boolean {
+    fun isValidTransition(from: State, step: Step): Boolean {
         // Check if the step's preconditions include the current state
         if (!step.preconditions.contains(from)) {
             return false
@@ -31,7 +29,7 @@ class StateTransitionRulesImpl : StateTransitionRules {
         return true
     }
 
-    override fun applyTransition(from: State, step: Step): State {
+    fun applyTransition(from: State, step: Step): State {
         // Return the step's postState
         // In a more complex implementation, we might compute this based on the current state
         return step.postState

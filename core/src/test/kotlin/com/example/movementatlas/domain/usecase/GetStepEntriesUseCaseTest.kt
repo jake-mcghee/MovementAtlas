@@ -1,33 +1,28 @@
 package com.example.movementatlas.domain.usecase
 
 import com.example.movementatlas.domain.entity.*
-import com.example.movementatlas.domain.repository.StateTransitionRules
-import io.mockk.every
-import io.mockk.mockk
+import com.example.movementatlas.domain.service.StateTransitionRules
 import org.junit.Assert.*
 import org.junit.Test
 
 class GetStepEntriesUseCaseTest {
 
+    private val transitionRules = StateTransitionRules()
+
     @Test
     fun `returns all states that satisfy step preconditions`() {
         // Given
         val validState = State.Solo(SoloState(WeightFoot.LEFT))
-        val invalidState = State.Solo(SoloState(WeightFoot.RIGHT))
+        val anotherValidState = State.Solo(SoloState(WeightFoot.RIGHT))
 
         val step = Step(
             id = "step-1",
             name = "Test Step",
             tags = emptyList(),
-            preconditions = listOf(validState, invalidState),
+            preconditions = listOf(validState, anotherValidState),
             postState = State.Solo(SoloState(WeightFoot.LEFT)),
             type = StepType.SOLO
         )
-
-        val transitionRules = mockk<StateTransitionRules> {
-            every { isValidTransition(validState, step) } returns true
-            every { isValidTransition(invalidState, step) } returns false
-        }
 
         val useCase = GetStepEntriesUseCase(transitionRules)
 
@@ -35,9 +30,9 @@ class GetStepEntriesUseCaseTest {
         val result = useCase(step)
 
         // Then
-        assertEquals(1, result.size)
+        assertEquals(2, result.size)
         assertTrue(result.contains(validState))
-        assertFalse(result.contains(invalidState))
+        assertTrue(result.contains(anotherValidState))
     }
 
     @Test
@@ -51,15 +46,49 @@ class GetStepEntriesUseCaseTest {
             postState = State.Solo(SoloState(WeightFoot.LEFT)),
             type = StepType.SOLO
         )
-        
-        val transitionRules = mockk<StateTransitionRules>()
-        
+
         val useCase = GetStepEntriesUseCase(transitionRules)
-        
+
         // When
         val result = useCase(step)
-        
+
         // Then
         assertTrue(result.isEmpty())
+    }
+
+    @Test
+    fun `filters out states that fail type validation`() {
+        // Given - a solo state trying to enter a partner step
+        val soloState = State.Solo(SoloState(WeightFoot.LEFT))
+        val partnerState = State.Partner(
+            PartnerState(
+                lead = SoloState(WeightFoot.LEFT),
+                follow = SoloState(WeightFoot.RIGHT)
+            )
+        )
+
+        val step = Step(
+            id = "step-1",
+            name = "Partner Step",
+            tags = emptyList(),
+            preconditions = listOf(soloState, partnerState),
+            postState = State.Partner(
+                PartnerState(
+                    lead = SoloState(WeightFoot.RIGHT),
+                    follow = SoloState(WeightFoot.LEFT)
+                )
+            ),
+            type = StepType.PARTNER
+        )
+
+        val useCase = GetStepEntriesUseCase(transitionRules)
+
+        // When
+        val result = useCase(step)
+
+        // Then - only the partner state should be valid
+        assertEquals(1, result.size)
+        assertTrue(result.contains(partnerState))
+        assertFalse(result.contains(soloState))
     }
 }

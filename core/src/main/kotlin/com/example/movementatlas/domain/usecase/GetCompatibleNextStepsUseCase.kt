@@ -2,7 +2,7 @@ package com.example.movementatlas.domain.usecase
 
 import com.example.movementatlas.domain.entity.State
 import com.example.movementatlas.domain.repository.StepRepository
-import com.example.movementatlas.domain.repository.StateTransitionRules
+import com.example.movementatlas.domain.service.StateTransitionRules
 import kotlinx.coroutines.flow.first
 
 class GetCompatibleNextStepsUseCase(

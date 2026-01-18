@@ -4,9 +4,9 @@ import com.example.movementatlas.domain.entity.*
 import org.junit.Assert.*
 import org.junit.Test
 
-class StateTransitionRulesImplTest {
+class StateTransitionRulesTest {
 
-    private val rules = StateTransitionRulesImpl()
+    private val rules = StateTransitionRules()
 
     @Test
     fun `validates solo step transitions with matching weight foot`() {

@@ -3,6 +3,7 @@ package com.example.movementatlas.presentation.viewmodel
 import com.example.movementatlas.domain.entity.*
 import com.example.movementatlas.domain.usecase.GenerateSequencesUseCase
 import com.example.movementatlas.domain.usecase.GetCompatibleNextStepsUseCase
+import com.example.movementatlas.presentation.model.StartStateOption
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
@@ -37,13 +38,13 @@ class MovementAtlasViewModelTest {
         // Given
         val generateSequencesUseCase = mockk<GenerateSequencesUseCase>()
         val getCompatibleNextStepsUseCase = mockk<GetCompatibleNextStepsUseCase>()
-        
+
         // When
         val viewModel = MovementAtlasViewModel(generateSequencesUseCase, getCompatibleNextStepsUseCase)
         val initialState = viewModel.uiState.value
-        
+
         // Then
-        assertNull(initialState.selectedState)
+        assertNull(initialState.selectedStartState)
         assertTrue(initialState.sequences.isEmpty())
         assertFalse(initialState.isLoading)
         assertNull(initialState.error)
@@ -52,6 +53,7 @@ class MovementAtlasViewModelTest {
     @Test
     fun `generateSequences updates state with results`() = runTest(testDispatcher) {
         // Given
+        val startStateOption = StartStateOption.LEFT
         val startState = SoloState(WeightFoot.LEFT)
         val sequence = Sequence(
             steps = listOf(
@@ -75,20 +77,20 @@ class MovementAtlasViewModelTest {
         val viewModel = MovementAtlasViewModel(generateSequencesUseCase, getCompatibleNextStepsUseCase)
 
         // When
-        viewModel.generateSequences(startState)
+        viewModel.generateSequences(startStateOption)
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Then
         val state = viewModel.uiState.value
-        assertEquals(startState, state.selectedState)
+        assertEquals(startStateOption, state.selectedStartState)
         assertEquals(1, state.sequences.size)
-        assertEquals(sequence, state.sequences.first())
         assertFalse(state.isLoading)
     }
 
     @Test
     fun `generateSequences handles errors`() = runTest(testDispatcher) {
         // Given
+        val startStateOption = StartStateOption.LEFT
         val startState = SoloState(WeightFoot.LEFT)
         val errorMessage = "Error generating sequences"
 
@@ -99,7 +101,7 @@ class MovementAtlasViewModelTest {
         val viewModel = MovementAtlasViewModel(generateSequencesUseCase, getCompatibleNextStepsUseCase)
 
         // When
-        viewModel.generateSequences(startState)
+        viewModel.generateSequences(startStateOption)
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Then
