@@ -3,113 +3,49 @@ package com.example.movementatlas.domain.data
 import com.example.movementatlas.domain.entity.*
 
 /**
- * Provides the default set of movement steps.
+ * Provides the default set of atomic movement steps (single weight transfers).
  * This is domain data that can be used by any platform implementation.
  */
 object DefaultStepProvider {
 
     fun getDefaultSteps(): List<Step> = listOf(
-        // Solo steps
+        // Solo atomic steps - single weight transfers
         Step(
-            id = "solo-basic-lr",
-            name = "Basic Step Left to Right",
-            tags = listOf("beginner", "solo", "basic"),
-            preconditions = listOf(State.Solo(SoloState(WeightFoot.LEFT))),
-            postState = State.Solo(SoloState(WeightFoot.RIGHT)),
-            type = StepType.SOLO
+            id = "step-lr",
+            name = "Left to Right",
+            tags = listOf("atomic", "solo"),
+            type = StepType.SOLO,
+            weightFootFrom = WeightFoot.LEFT,
+            weightFootTo = WeightFoot.RIGHT
         ),
         Step(
-            id = "solo-basic-rl",
-            name = "Basic Step Right to Left",
-            tags = listOf("beginner", "solo", "basic"),
-            preconditions = listOf(State.Solo(SoloState(WeightFoot.RIGHT))),
-            postState = State.Solo(SoloState(WeightFoot.LEFT)),
-            type = StepType.SOLO
+            id = "step-rl",
+            name = "Right to Left",
+            tags = listOf("atomic", "solo"),
+            type = StepType.SOLO,
+            weightFootFrom = WeightFoot.RIGHT,
+            weightFootTo = WeightFoot.LEFT
+        ),
+        // Partner atomic steps - weight transfers for both lead and follow
+        Step(
+            id = "partner-step-lr-rl",
+            name = "Lead Left→Right, Follow Right→Left",
+            tags = listOf("atomic", "partner"),
+            type = StepType.PARTNER,
+            leadFrom = WeightFoot.LEFT,
+            leadTo = WeightFoot.RIGHT,
+            followFrom = WeightFoot.RIGHT,
+            followTo = WeightFoot.LEFT
         ),
         Step(
-            id = "solo-turn",
-            name = "Turn",
-            tags = listOf("intermediate", "solo", "turn"),
-            preconditions = listOf(State.Solo(SoloState(WeightFoot.LEFT))),
-            postState = State.Solo(SoloState(WeightFoot.RIGHT)),
-            type = StepType.SOLO
-        ),
-        Step(
-            id = "solo-pivot",
-            name = "Pivot",
-            tags = listOf("intermediate", "solo", "pivot"),
-            preconditions = listOf(State.Solo(SoloState(WeightFoot.RIGHT))),
-            postState = State.Solo(SoloState(WeightFoot.LEFT)),
-            type = StepType.SOLO
-        ),
-        Step(
-            id = "solo-step-forward",
-            name = "Step Forward",
-            tags = listOf("beginner", "solo"),
-            preconditions = listOf(State.Solo(SoloState(WeightFoot.LEFT))),
-            postState = State.Solo(SoloState(WeightFoot.RIGHT)),
-            type = StepType.SOLO
-        ),
-        // Partner steps
-        Step(
-            id = "partner-lead-step",
-            name = "Lead Step",
-            tags = listOf("beginner", "partner", "lead"),
-            preconditions = listOf(
-                State.Partner(
-                    PartnerState(
-                        lead = SoloState(WeightFoot.LEFT),
-                        follow = SoloState(WeightFoot.RIGHT)
-                    )
-                )
-            ),
-            postState = State.Partner(
-                PartnerState(
-                    lead = SoloState(WeightFoot.RIGHT),
-                    follow = SoloState(WeightFoot.LEFT)
-                )
-            ),
-            type = StepType.PARTNER
-        ),
-        Step(
-            id = "partner-follow-step",
-            name = "Follow Step",
-            tags = listOf("beginner", "partner", "follow"),
-            preconditions = listOf(
-                State.Partner(
-                    PartnerState(
-                        lead = SoloState(WeightFoot.RIGHT),
-                        follow = SoloState(WeightFoot.LEFT)
-                    )
-                )
-            ),
-            postState = State.Partner(
-                PartnerState(
-                    lead = SoloState(WeightFoot.LEFT),
-                    follow = SoloState(WeightFoot.RIGHT)
-                )
-            ),
-            type = StepType.PARTNER
-        ),
-        Step(
-            id = "partner-turn",
-            name = "Partner Turn",
-            tags = listOf("intermediate", "partner", "turn"),
-            preconditions = listOf(
-                State.Partner(
-                    PartnerState(
-                        lead = SoloState(WeightFoot.LEFT),
-                        follow = SoloState(WeightFoot.RIGHT)
-                    )
-                )
-            ),
-            postState = State.Partner(
-                PartnerState(
-                    lead = SoloState(WeightFoot.RIGHT),
-                    follow = SoloState(WeightFoot.LEFT)
-                )
-            ),
-            type = StepType.PARTNER
+            id = "partner-step-rl-lr",
+            name = "Lead Right→Left, Follow Left→Right",
+            tags = listOf("atomic", "partner"),
+            type = StepType.PARTNER,
+            leadFrom = WeightFoot.RIGHT,
+            leadTo = WeightFoot.LEFT,
+            followFrom = WeightFoot.LEFT,
+            followTo = WeightFoot.RIGHT
         )
     )
 }

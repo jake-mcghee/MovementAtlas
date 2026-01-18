@@ -85,7 +85,7 @@ fun MovementAtlasScreen(
                             style = MaterialTheme.typography.titleSmall
                         )
                         Text(
-                            text = "Steps: ${sequence.steps.joinToString(", ") { it.name }}",
+                            text = "Step Units: ${sequence.stepUnits.joinToString(", ") { it.name }}",
                             style = MaterialTheme.typography.bodySmall
                         )
                     }

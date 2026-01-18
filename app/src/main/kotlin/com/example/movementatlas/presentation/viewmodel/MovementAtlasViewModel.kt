@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.movementatlas.domain.entity.State
 import com.example.movementatlas.domain.usecase.GenerateSequencesUseCase
-import com.example.movementatlas.domain.usecase.GetCompatibleNextStepsUseCase
+import com.example.movementatlas.domain.usecase.GetCompatibleNextStepUnitsUseCase
 import com.example.movementatlas.presentation.mapper.UiModelMapper.toDomainState
 import com.example.movementatlas.presentation.mapper.UiModelMapper.toUiModels
 import com.example.movementatlas.presentation.model.StartStateOption
@@ -20,7 +20,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MovementAtlasViewModel @Inject constructor(
     private val generateSequencesUseCase: GenerateSequencesUseCase,
-    private val getCompatibleNextStepsUseCase: GetCompatibleNextStepsUseCase
+    private val getCompatibleNextStepUnitsUseCase: GetCompatibleNextStepUnitsUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SimpleUiState())

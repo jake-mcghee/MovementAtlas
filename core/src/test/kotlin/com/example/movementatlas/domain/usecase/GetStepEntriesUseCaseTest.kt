@@ -4,50 +4,70 @@ import com.example.movementatlas.domain.entity.*
 import org.junit.Assert.*
 import org.junit.Test
 
-class GetStepEntriesUseCaseTest {
+class GetStepUnitEntriesUseCaseTest {
 
     @Test
-    fun `returns all states that satisfy step preconditions`() {
+    fun `returns all states that satisfy step unit preconditions`() {
         // Given
         val validState = State.Solo(SoloState(WeightFoot.LEFT))
-        val anotherValidState = State.Solo(SoloState(WeightFoot.RIGHT))
+        val invalidState = State.Solo(SoloState(WeightFoot.RIGHT)) // Invalid because step starts from LEFT
 
         val step = Step(
-            id = "step-1",
-            name = "Test Step",
+            id = "step-lr",
+            name = "Left to Right",
             tags = emptyList(),
-            preconditions = listOf(validState, anotherValidState),
-            postState = State.Solo(SoloState(WeightFoot.LEFT)),
+            type = StepType.SOLO,
+            weightFootFrom = WeightFoot.LEFT,
+            weightFootTo = WeightFoot.RIGHT
+        )
+
+        val stepUnit = StepUnit(
+            id = "unit-1",
+            name = "Test Unit",
+            tags = emptyList(),
+            steps = listOf(step),
+            preconditions = listOf(validState, invalidState),
+            postState = State.Solo(SoloState(WeightFoot.RIGHT)),
             type = StepType.SOLO
         )
 
-        val useCase = GetStepEntriesUseCase()
+        val useCase = GetStepUnitEntriesUseCase()
 
         // When
-        val result = useCase(step)
+        val result = useCase(stepUnit)
 
-        // Then
-        assertEquals(2, result.size)
+        // Then - only validState should be returned (invalidState doesn't match step's starting foot)
+        assertEquals(1, result.size)
         assertTrue(result.contains(validState))
-        assertTrue(result.contains(anotherValidState))
+        assertFalse(result.contains(invalidState))
     }
 
     @Test
-    fun `returns empty list when step has no valid entry states`() {
+    fun `returns empty list when step unit has no valid entry states`() {
         // Given
         val step = Step(
-            id = "step-1",
-            name = "Test Step",
+            id = "step-lr",
+            name = "Left to Right",
             tags = emptyList(),
+            type = StepType.SOLO,
+            weightFootFrom = WeightFoot.LEFT,
+            weightFootTo = WeightFoot.RIGHT
+        )
+
+        val stepUnit = StepUnit(
+            id = "unit-1",
+            name = "Test Unit",
+            tags = emptyList(),
+            steps = listOf(step),
             preconditions = emptyList(),
-            postState = State.Solo(SoloState(WeightFoot.LEFT)),
+            postState = State.Solo(SoloState(WeightFoot.RIGHT)),
             type = StepType.SOLO
         )
 
-        val useCase = GetStepEntriesUseCase()
+        val useCase = GetStepUnitEntriesUseCase()
 
         // When
-        val result = useCase(step)
+        val result = useCase(stepUnit)
 
         // Then
         assertTrue(result.isEmpty())
@@ -55,7 +75,7 @@ class GetStepEntriesUseCaseTest {
 
     @Test
     fun `filters out states that fail type validation`() {
-        // Given - a solo state trying to enter a partner step
+        // Given - a solo state trying to enter a partner step unit
         val soloState = State.Solo(SoloState(WeightFoot.LEFT))
         val partnerState = State.Partner(
             PartnerState(
@@ -65,9 +85,21 @@ class GetStepEntriesUseCaseTest {
         )
 
         val step = Step(
-            id = "step-1",
+            id = "step-partner",
             name = "Partner Step",
             tags = emptyList(),
+            type = StepType.PARTNER,
+            leadFrom = WeightFoot.LEFT,
+            leadTo = WeightFoot.RIGHT,
+            followFrom = WeightFoot.RIGHT,
+            followTo = WeightFoot.LEFT
+        )
+
+        val stepUnit = StepUnit(
+            id = "unit-1",
+            name = "Partner Unit",
+            tags = emptyList(),
+            steps = listOf(step),
             preconditions = listOf(soloState, partnerState),
             postState = State.Partner(
                 PartnerState(
@@ -78,10 +110,10 @@ class GetStepEntriesUseCaseTest {
             type = StepType.PARTNER
         )
 
-        val useCase = GetStepEntriesUseCase()
+        val useCase = GetStepUnitEntriesUseCase()
 
         // When
-        val result = useCase(step)
+        val result = useCase(stepUnit)
 
         // Then - only the partner state should be valid
         assertEquals(1, result.size)

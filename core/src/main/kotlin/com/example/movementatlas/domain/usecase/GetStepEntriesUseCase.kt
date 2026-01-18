@@ -1,12 +1,12 @@
 package com.example.movementatlas.domain.usecase
 
-import com.example.movementatlas.domain.entity.Step
+import com.example.movementatlas.domain.entity.StepUnit
 import com.example.movementatlas.domain.entity.State
 
-class GetStepEntriesUseCase {
-    operator fun invoke(step: Step): List<State> {
-        return step.preconditions.filter { state ->
-            state.canTransitionTo(step)
+class GetStepUnitEntriesUseCase {
+    operator fun invoke(stepUnit: StepUnit): List<State> {
+        return stepUnit.preconditions.filter { state ->
+            state.canTransitionTo(stepUnit)
         }
     }
 }

@@ -1,11 +1,13 @@
 package com.example.movementatlas.di
 
 import com.example.movementatlas.data.StepRepositoryAndroidImpl
+import com.example.movementatlas.data.StepUnitRepositoryAndroidImpl
 import com.example.movementatlas.domain.repository.StepRepository
+import com.example.movementatlas.domain.repository.StepUnitRepository
 import com.example.movementatlas.domain.usecase.GenerateSequencesUseCase
-import com.example.movementatlas.domain.usecase.GetCompatibleNextStepsUseCase
-import com.example.movementatlas.domain.usecase.GetStepEntriesUseCase
-import com.example.movementatlas.domain.usecase.GetStepExitsUseCase
+import com.example.movementatlas.domain.usecase.GetCompatibleNextStepUnitsUseCase
+import com.example.movementatlas.domain.usecase.GetStepUnitEntriesUseCase
+import com.example.movementatlas.domain.usecase.GetStepUnitExitsUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -24,29 +26,37 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun provideStepUnitRepository(
+        stepRepository: StepRepository
+    ): StepUnitRepository {
+        return StepUnitRepositoryAndroidImpl(stepRepository)
+    }
+
+    @Provides
+    @Singleton
     fun provideGenerateSequencesUseCase(
-        stepRepository: StepRepository
+        stepUnitRepository: StepUnitRepository
     ): GenerateSequencesUseCase {
-        return GenerateSequencesUseCase(stepRepository)
+        return GenerateSequencesUseCase(stepUnitRepository)
     }
 
     @Provides
     @Singleton
-    fun provideGetCompatibleNextStepsUseCase(
-        stepRepository: StepRepository
-    ): GetCompatibleNextStepsUseCase {
-        return GetCompatibleNextStepsUseCase(stepRepository)
+    fun provideGetCompatibleNextStepUnitsUseCase(
+        stepUnitRepository: StepUnitRepository
+    ): GetCompatibleNextStepUnitsUseCase {
+        return GetCompatibleNextStepUnitsUseCase(stepUnitRepository)
     }
 
     @Provides
     @Singleton
-    fun provideGetStepEntriesUseCase(): GetStepEntriesUseCase {
-        return GetStepEntriesUseCase()
+    fun provideGetStepUnitEntriesUseCase(): GetStepUnitEntriesUseCase {
+        return GetStepUnitEntriesUseCase()
     }
 
     @Provides
     @Singleton
-    fun provideGetStepExitsUseCase(): GetStepExitsUseCase {
-        return GetStepExitsUseCase()
+    fun provideGetStepUnitExitsUseCase(): GetStepUnitExitsUseCase {
+        return GetStepUnitExitsUseCase()
     }
 }

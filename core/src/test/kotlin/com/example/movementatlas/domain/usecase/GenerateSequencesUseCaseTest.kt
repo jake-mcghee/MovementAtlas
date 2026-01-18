@@ -1,7 +1,7 @@
 package com.example.movementatlas.domain.usecase
 
 import com.example.movementatlas.domain.entity.*
-import com.example.movementatlas.domain.repository.StepRepository
+import com.example.movementatlas.domain.repository.StepUnitRepository
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.first
@@ -19,30 +19,49 @@ class GenerateSequencesUseCaseTest {
         val maxLength = 2
 
         val step1 = Step(
-            id = "step-1",
-            name = "Step 1",
+            id = "step-lr",
+            name = "Left to Right",
             tags = emptyList(),
+            type = StepType.SOLO,
+            weightFootFrom = WeightFoot.LEFT,
+            weightFootTo = WeightFoot.RIGHT
+        )
+        val step2 = Step(
+            id = "step-rl",
+            name = "Right to Left",
+            tags = emptyList(),
+            type = StepType.SOLO,
+            weightFootFrom = WeightFoot.RIGHT,
+            weightFootTo = WeightFoot.LEFT
+        )
+
+        val stepUnit1 = StepUnit(
+            id = "unit-1",
+            name = "Unit 1",
+            tags = emptyList(),
+            steps = listOf(step1),
             preconditions = listOf(startState),
             postState = State.Solo(SoloState(WeightFoot.RIGHT)),
             type = StepType.SOLO
         )
 
-        val step2 = Step(
-            id = "step-2",
-            name = "Step 2",
+        val stepUnit2 = StepUnit(
+            id = "unit-2",
+            name = "Unit 2",
             tags = emptyList(),
+            steps = listOf(step2),
             preconditions = listOf(State.Solo(SoloState(WeightFoot.RIGHT))),
             postState = State.Solo(SoloState(WeightFoot.LEFT)),
             type = StepType.SOLO
         )
 
-        val allSteps = listOf(step1, step2)
+        val allStepUnits = listOf(stepUnit1, stepUnit2)
 
-        val stepRepository = mockk<StepRepository> {
-            every { getAllSteps() } returns flowOf(allSteps)
+        val stepUnitRepository = mockk<StepUnitRepository> {
+            every { getAllStepUnits() } returns flowOf(allStepUnits)
         }
 
-        val useCase = GenerateSequencesUseCase(stepRepository)
+        val useCase = GenerateSequencesUseCase(stepUnitRepository)
 
         // When
         val result = useCase(startState, maxLength).first()
@@ -50,7 +69,7 @@ class GenerateSequencesUseCaseTest {
         // Then
         assertTrue(result.isNotEmpty())
         result.forEach { sequence ->
-            assertTrue(sequence.steps.size <= maxLength)
+            assertTrue(sequence.stepUnits.size <= maxLength)
             assertEquals(startState, sequence.startState)
         }
     }
@@ -62,26 +81,36 @@ class GenerateSequencesUseCaseTest {
         val maxLength = 1
 
         val step = Step(
-            id = "step-1",
-            name = "Step 1",
+            id = "step-lr",
+            name = "Left to Right",
             tags = emptyList(),
+            type = StepType.SOLO,
+            weightFootFrom = WeightFoot.LEFT,
+            weightFootTo = WeightFoot.RIGHT
+        )
+
+        val stepUnit = StepUnit(
+            id = "unit-1",
+            name = "Unit 1",
+            tags = emptyList(),
+            steps = listOf(step),
             preconditions = listOf(startState),
             postState = State.Solo(SoloState(WeightFoot.RIGHT)),
             type = StepType.SOLO
         )
 
-        val stepRepository = mockk<StepRepository> {
-            every { getAllSteps() } returns flowOf(listOf(step))
+        val stepUnitRepository = mockk<StepUnitRepository> {
+            every { getAllStepUnits() } returns flowOf(listOf(stepUnit))
         }
 
-        val useCase = GenerateSequencesUseCase(stepRepository)
+        val useCase = GenerateSequencesUseCase(stepUnitRepository)
 
         // When
         val result = useCase(startState, maxLength).first()
 
         // Then
         result.forEach { sequence ->
-            assertTrue(sequence.steps.size <= maxLength)
+            assertTrue(sequence.stepUnits.size <= maxLength)
         }
     }
 
@@ -90,36 +119,55 @@ class GenerateSequencesUseCaseTest {
         // Given
         val startState = State.Solo(SoloState(WeightFoot.LEFT))
 
-        val validStep = Step(
-            id = "step-1",
-            name = "Valid Step",
+        val step1 = Step(
+            id = "step-lr",
+            name = "Left to Right",
             tags = emptyList(),
+            type = StepType.SOLO,
+            weightFootFrom = WeightFoot.LEFT,
+            weightFootTo = WeightFoot.RIGHT
+        )
+        val step2 = Step(
+            id = "step-rl",
+            name = "Right to Left",
+            tags = emptyList(),
+            type = StepType.SOLO,
+            weightFootFrom = WeightFoot.RIGHT,
+            weightFootTo = WeightFoot.LEFT
+        )
+
+        val validStepUnit = StepUnit(
+            id = "unit-1",
+            name = "Valid Unit",
+            tags = emptyList(),
+            steps = listOf(step1),
             preconditions = listOf(startState),
             postState = State.Solo(SoloState(WeightFoot.RIGHT)),
             type = StepType.SOLO
         )
 
-        val invalidStep = Step(
-            id = "step-2",
-            name = "Invalid Step",
+        val invalidStepUnit = StepUnit(
+            id = "unit-2",
+            name = "Invalid Unit",
             tags = emptyList(),
+            steps = listOf(step2),
             preconditions = listOf(State.Solo(SoloState(WeightFoot.RIGHT))),
             postState = State.Solo(SoloState(WeightFoot.LEFT)),
             type = StepType.SOLO
         )
 
-        val stepRepository = mockk<StepRepository> {
-            every { getAllSteps() } returns flowOf(listOf(validStep, invalidStep))
+        val stepUnitRepository = mockk<StepUnitRepository> {
+            every { getAllStepUnits() } returns flowOf(listOf(validStepUnit, invalidStepUnit))
         }
 
-        val useCase = GenerateSequencesUseCase(stepRepository)
+        val useCase = GenerateSequencesUseCase(stepUnitRepository)
 
         // When
         val result = useCase(startState, 1).first()
 
         // Then
-        // At depth 1, only validStep should be in first-level sequences
-        val firstLevelSteps = result.filter { it.steps.size == 1 }.flatMap { it.steps }
-        assertTrue(firstLevelSteps.all { it.id == validStep.id })
+        // At depth 1, only validStepUnit should be in first-level sequences
+        val firstLevelStepUnits = result.filter { it.stepUnits.size == 1 }.flatMap { it.stepUnits }
+        assertTrue(firstLevelStepUnits.all { it.id == validStepUnit.id })
     }
 }

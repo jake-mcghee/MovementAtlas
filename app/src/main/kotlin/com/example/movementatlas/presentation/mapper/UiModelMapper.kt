@@ -4,10 +4,12 @@ import com.example.movementatlas.domain.entity.Sequence
 import com.example.movementatlas.domain.entity.SoloState
 import com.example.movementatlas.domain.entity.State
 import com.example.movementatlas.domain.entity.Step
+import com.example.movementatlas.domain.entity.StepUnit
 import com.example.movementatlas.domain.entity.WeightFoot
 import com.example.movementatlas.presentation.model.SequenceUiModel
 import com.example.movementatlas.presentation.model.StartStateOption
 import com.example.movementatlas.presentation.model.StepUiModel
+import com.example.movementatlas.presentation.model.StepUnitUiModel
 
 /**
  * Mappers for converting domain entities to UI models.
@@ -21,11 +23,19 @@ object UiModelMapper {
         difficulty = determineDifficulty(tags)
     )
 
+    fun StepUnit.toUiModel(): StepUnitUiModel = StepUnitUiModel(
+        id = id,
+        name = name,
+        tags = tags,
+        difficulty = determineDifficulty(tags),
+        stepCount = steps.size
+    )
+
     fun Sequence.toUiModel(): SequenceUiModel = SequenceUiModel(
-        steps = steps.map { it.toUiModel() },
+        stepUnits = stepUnits.map { it.toUiModel() },
         startStateDisplay = startState.toDisplayString(),
         endStateDisplay = endState.toDisplayString(),
-        stepCount = steps.size
+        stepUnitCount = stepUnits.size
     )
 
     fun List<Sequence>.toUiModels(): List<SequenceUiModel> = map { it.toUiModel() }

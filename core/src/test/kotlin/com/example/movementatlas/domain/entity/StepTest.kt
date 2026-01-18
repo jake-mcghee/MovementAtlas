@@ -6,25 +6,67 @@ import org.junit.Test
 class StepTest {
 
     @Test
-    fun `Step is created with all required properties`() {
+    fun `Step is created with all required properties for solo`() {
         // Given
         val id = "step-1"
-        val name = "Basic Step"
+        val name = "Left to Right"
         val tags = listOf("beginner", "solo")
-        val preconditions = listOf<State>(State.Solo(SoloState(WeightFoot.LEFT)))
-        val postState = State.Solo(SoloState(WeightFoot.RIGHT))
         val type = StepType.SOLO
+        val weightFootFrom = WeightFoot.LEFT
+        val weightFootTo = WeightFoot.RIGHT
         
         // When
-        val step = Step(id, name, tags, preconditions, postState, type)
+        val step = Step(
+            id = id,
+            name = name,
+            tags = tags,
+            type = type,
+            weightFootFrom = weightFootFrom,
+            weightFootTo = weightFootTo
+        )
         
         // Then
         assertEquals(id, step.id)
         assertEquals(name, step.name)
         assertEquals(tags, step.tags)
-        assertEquals(preconditions, step.preconditions)
-        assertEquals(postState, step.postState)
         assertEquals(type, step.type)
+        assertEquals(weightFootFrom, step.weightFootFrom)
+        assertEquals(weightFootTo, step.weightFootTo)
+    }
+
+    @Test
+    fun `Step is created with all required properties for partner`() {
+        // Given
+        val id = "step-1"
+        val name = "Partner Step"
+        val tags = listOf("beginner", "partner")
+        val type = StepType.PARTNER
+        val leadFrom = WeightFoot.LEFT
+        val leadTo = WeightFoot.RIGHT
+        val followFrom = WeightFoot.RIGHT
+        val followTo = WeightFoot.LEFT
+        
+        // When
+        val step = Step(
+            id = id,
+            name = name,
+            tags = tags,
+            type = type,
+            leadFrom = leadFrom,
+            leadTo = leadTo,
+            followFrom = followFrom,
+            followTo = followTo
+        )
+        
+        // Then
+        assertEquals(id, step.id)
+        assertEquals(name, step.name)
+        assertEquals(tags, step.tags)
+        assertEquals(type, step.type)
+        assertEquals(leadFrom, step.leadFrom)
+        assertEquals(leadTo, step.leadTo)
+        assertEquals(followFrom, step.followFrom)
+        assertEquals(followTo, step.followTo)
     }
 
     @Test
@@ -34,25 +76,25 @@ class StepTest {
             id = "step-1",
             name = "Step 1",
             tags = emptyList(),
-            preconditions = emptyList(),
-            postState = State.Solo(SoloState(WeightFoot.LEFT)),
-            type = StepType.SOLO
+            type = StepType.SOLO,
+            weightFootFrom = WeightFoot.LEFT,
+            weightFootTo = WeightFoot.RIGHT
         )
         val step2 = Step(
             id = "step-1",
             name = "Different Name",
             tags = listOf("tag"),
-            preconditions = emptyList(),
-            postState = State.Solo(SoloState(WeightFoot.RIGHT)),
-            type = StepType.PARTNER
+            type = StepType.SOLO,
+            weightFootFrom = WeightFoot.RIGHT,
+            weightFootTo = WeightFoot.LEFT
         )
         val step3 = Step(
             id = "step-2",
             name = "Step 1",
             tags = emptyList(),
-            preconditions = emptyList(),
-            postState = State.Solo(SoloState(WeightFoot.LEFT)),
-            type = StepType.SOLO
+            type = StepType.SOLO,
+            weightFootFrom = WeightFoot.LEFT,
+            weightFootTo = WeightFoot.RIGHT
         )
         
         // Then
