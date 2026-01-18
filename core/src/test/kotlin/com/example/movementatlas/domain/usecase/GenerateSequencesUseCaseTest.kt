@@ -29,7 +29,9 @@ class GenerateSequencesUseCaseTest {
         assertTrue(result.isNotEmpty())
         result.forEach { sequence ->
             assertTrue(sequence.stepUnits.size <= maxLength)
-            assertEquals(startWeightFoot, sequence.startWeightFoot)
+            // Verify end weight foot can be computed correctly
+            val computedEndFoot = sequence.computeEndWeightFoot(startWeightFoot)
+            assertNotNull(computedEndFoot)
         }
     }
 
@@ -70,7 +72,8 @@ class GenerateSequencesUseCaseTest {
         result.forEach { sequence ->
             if (sequence.stepUnits.isNotEmpty()) {
                 // Starting from LEFT, applying one step should end on RIGHT
-                assertEquals(WeightFoot.RIGHT, sequence.endWeightFoot)
+                val endWeightFoot = sequence.computeEndWeightFoot(startWeightFoot)
+                assertEquals(WeightFoot.RIGHT, endWeightFoot)
             }
         }
     }
@@ -91,5 +94,10 @@ class GenerateSequencesUseCaseTest {
 
         // Then
         assertTrue(result.size >= 3) // Should have at least one sequence per step unit
+        result.forEach { sequence ->
+            // Verify each sequence can compute end weight foot
+            val endWeightFoot = sequence.computeEndWeightFoot(startWeightFoot)
+            assertNotNull(endWeightFoot)
+        }
     }
 }

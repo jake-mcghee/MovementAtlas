@@ -57,10 +57,9 @@ class MovementAtlasViewModelTest {
         val startWeightFoot = WeightFoot.LEFT
         val stepPattern = Step(direction = Direction.IN_PLACE)
         val stepUnit = StepUnit.DistanceOne(step = stepPattern)
-        val sequence = Sequence(
-            stepUnits = listOf(stepUnit),
-            startWeightFoot = startWeightFoot,
-            endWeightFoot = WeightFoot.RIGHT
+        val sequence = SoloSequence(
+            id = null,
+            stepUnits = listOf(stepUnit)
         )
 
         val generateSequencesUseCase = mockk<GenerateSequencesUseCase>()

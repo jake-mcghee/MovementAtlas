@@ -35,7 +35,7 @@ class MovementAtlasViewModel @Inject constructor(
                     .collect { sequences ->
                         _uiState.update {
                             it.copy(
-                                sequences = sequences.toUiModels(),
+                                sequences = sequences.toUiModels(startWeightFoot),
                                 isLoading = false,
                                 error = null
                             )

@@ -19,7 +19,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideStepUnits(): List<StepUnit> {
+    fun provideStepUnits(): List<@JvmSuppressWildcards StepUnit> {
         val steps = DefaultStepProvider.getDefaultSteps()
         return DefaultStepUnitProvider.getDefaultStepUnits(steps)
     }
@@ -27,7 +27,7 @@ object AppModule {
     @Provides
     @Singleton
     fun provideGenerateSequencesUseCase(
-        stepUnits: List<StepUnit>
+        stepUnits: List<@JvmSuppressWildcards StepUnit>
     ): GenerateSequencesUseCase {
         return GenerateSequencesUseCase(stepUnits)
     }
@@ -35,7 +35,7 @@ object AppModule {
     @Provides
     @Singleton
     fun provideGetCompatibleNextStepUnitsUseCase(
-        stepUnits: List<StepUnit>
+        stepUnits: List<@JvmSuppressWildcards StepUnit>
     ): GetCompatibleNextStepUnitsUseCase {
         return GetCompatibleNextStepUnitsUseCase(stepUnits)
     }

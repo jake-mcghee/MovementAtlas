@@ -1,6 +1,6 @@
 package com.example.movementatlas.presentation.mapper
 
-import com.example.movementatlas.domain.entity.Sequence
+import com.example.movementatlas.domain.entity.SoloSequence
 import com.example.movementatlas.domain.entity.Step
 import com.example.movementatlas.domain.entity.StepUnit
 import com.example.movementatlas.domain.entity.WeightFoot
@@ -25,14 +25,18 @@ object UiModelMapper {
         stepCount = steps.size
     )
 
-    fun Sequence.toUiModel(): SequenceUiModel = SequenceUiModel(
-        stepUnits = stepUnits.map { it.toUiModel() },
-        startStateDisplay = "Weight on ${startWeightFoot.name}",
-        endStateDisplay = "Weight on ${endWeightFoot.name}",
-        stepUnitCount = stepUnits.size
-    )
+    fun SoloSequence.toUiModel(startWeightFoot: WeightFoot): SequenceUiModel {
+        val endWeightFoot = computeEndWeightFoot(startWeightFoot)
+        return SequenceUiModel(
+            stepUnits = stepUnits.map { it.toUiModel() },
+            startStateDisplay = "Weight on ${startWeightFoot.name}",
+            endStateDisplay = "Weight on ${endWeightFoot.name}",
+            stepUnitCount = stepUnits.size
+        )
+    }
 
-    fun List<Sequence>.toUiModels(): List<SequenceUiModel> = map { it.toUiModel() }
+    fun List<SoloSequence>.toUiModels(startWeightFoot: WeightFoot): List<SequenceUiModel> = 
+        map { it.toUiModel(startWeightFoot) }
 
     fun WeightFoot.toDisplayString(): String = "Weight on ${name}"
 
