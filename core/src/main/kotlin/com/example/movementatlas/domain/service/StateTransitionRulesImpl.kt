@@ -1,8 +1,9 @@
-package com.example.movementatlas.domain.repository
+package com.example.movementatlas.domain.service
 
 import com.example.movementatlas.domain.entity.State
 import com.example.movementatlas.domain.entity.Step
 import com.example.movementatlas.domain.entity.StepType
+import com.example.movementatlas.domain.repository.StateTransitionRules
 
 /**
  * Default implementation of StateTransitionRules.

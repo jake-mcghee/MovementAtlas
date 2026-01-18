@@ -3,9 +3,11 @@ package com.example.movementatlas.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.movementatlas.domain.entity.State
-import com.example.movementatlas.domain.entity.SoloState
 import com.example.movementatlas.domain.usecase.GenerateSequencesUseCase
 import com.example.movementatlas.domain.usecase.GetCompatibleNextStepsUseCase
+import com.example.movementatlas.presentation.mapper.UiModelMapper.toDomainState
+import com.example.movementatlas.presentation.mapper.UiModelMapper.toUiModels
+import com.example.movementatlas.presentation.model.StartStateOption
 import com.example.movementatlas.presentation.ui.SimpleUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,15 +26,16 @@ class MovementAtlasViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(SimpleUiState())
     val uiState: StateFlow<SimpleUiState> = _uiState.asStateFlow()
 
-    fun generateSequences(startState: SoloState) {
+    fun generateSequences(startStateOption: StartStateOption) {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true, error = null, selectedState = startState) }
+            _uiState.update { it.copy(isLoading = true, error = null, selectedStartState = startStateOption) }
             try {
-                generateSequencesUseCase(State.Solo(startState), 5)
+                val domainState = State.Solo(startStateOption.toDomainState())
+                generateSequencesUseCase(domainState, 5)
                     .collect { sequences ->
                         _uiState.update {
                             it.copy(
-                                sequences = sequences,
+                                sequences = sequences.toUiModels(),
                                 isLoading = false,
                                 error = null
                             )

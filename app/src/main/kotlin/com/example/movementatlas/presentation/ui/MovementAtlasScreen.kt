@@ -9,8 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.movementatlas.domain.entity.SoloState
-import com.example.movementatlas.domain.entity.WeightFoot
+import com.example.movementatlas.presentation.model.StartStateOption
 import com.example.movementatlas.presentation.viewmodel.MovementAtlasViewModel
 
 @Composable
@@ -39,16 +38,16 @@ fun MovementAtlasScreen(
         ) {
             Text("Start State:")
             Button(
-                onClick = { viewModel.generateSequences(SoloState(WeightFoot.LEFT)) },
+                onClick = { viewModel.generateSequences(StartStateOption.LEFT) },
                 enabled = !uiState.isLoading
             ) {
-                Text("LEFT")
+                Text(StartStateOption.LEFT.displayName)
             }
             Button(
-                onClick = { viewModel.generateSequences(SoloState(WeightFoot.RIGHT)) },
+                onClick = { viewModel.generateSequences(StartStateOption.RIGHT) },
                 enabled = !uiState.isLoading
             ) {
-                Text("RIGHT")
+                Text(StartStateOption.RIGHT.displayName)
             }
         }
 
@@ -71,7 +70,7 @@ fun MovementAtlasScreen(
                 text = "Generated Sequences (${uiState.sequences.size}):",
                 style = MaterialTheme.typography.titleMedium
             )
-            
+
             uiState.sequences.forEachIndexed { index, sequence ->
                 Card(
                     modifier = Modifier
@@ -92,7 +91,7 @@ fun MovementAtlasScreen(
                     }
                 }
             }
-        } else if (!uiState.isLoading && uiState.error == null && uiState.selectedState != null) {
+        } else if (!uiState.isLoading && uiState.error == null && uiState.selectedStartState != null) {
             Text("No sequences found")
         }
     }

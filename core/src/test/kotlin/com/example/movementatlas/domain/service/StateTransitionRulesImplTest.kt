@@ -1,4 +1,4 @@
-package com.example.movementatlas.domain.repository
+package com.example.movementatlas.domain.service
 
 import com.example.movementatlas.domain.entity.*
 import org.junit.Assert.*
@@ -20,10 +20,10 @@ class StateTransitionRulesImplTest {
             postState = State.Solo(SoloState(WeightFoot.RIGHT)),
             type = StepType.SOLO
         )
-        
+
         // When
         val isValid = rules.isValidTransition(fromState, step)
-        
+
         // Then
         assertTrue(isValid)
     }
@@ -40,10 +40,10 @@ class StateTransitionRulesImplTest {
             postState = State.Solo(SoloState(WeightFoot.LEFT)),
             type = StepType.SOLO
         )
-        
+
         // When
         val isValid = rules.isValidTransition(fromState, step)
-        
+
         // Then
         assertFalse(isValid)
     }
@@ -70,10 +70,10 @@ class StateTransitionRulesImplTest {
             ),
             type = StepType.PARTNER
         )
-        
+
         // When
         val isValid = rules.isValidTransition(fromState, step)
-        
+
         // Then
         assertTrue(isValid)
     }
@@ -102,10 +102,10 @@ class StateTransitionRulesImplTest {
             ),
             type = StepType.PARTNER
         )
-        
+
         // When
         val isValid = rules.isValidTransition(fromState, step)
-        
+
         // Then
         assertFalse(isValid)
     }
@@ -122,10 +122,10 @@ class StateTransitionRulesImplTest {
             postState = State.Solo(SoloState(WeightFoot.RIGHT)),
             type = StepType.SOLO
         )
-        
+
         // When
         val result = rules.applyTransition(fromState, step)
-        
+
         // Then
         assertEquals(step.postState, result)
     }
@@ -152,10 +152,10 @@ class StateTransitionRulesImplTest {
             ),
             type = StepType.PARTNER
         )
-        
+
         // When
         val result = rules.applyTransition(fromState, step)
-        
+
         // Then
         assertEquals(step.postState, result)
     }
