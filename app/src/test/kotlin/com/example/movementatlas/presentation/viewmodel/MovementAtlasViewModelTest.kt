@@ -55,7 +55,7 @@ class MovementAtlasViewModelTest {
         // Given
         val startStateOption = StartStateOption.LEFT
         val startWeightFoot = WeightFoot.LEFT
-        val stepPattern = Step(direction = Direction.IN_PLACE)
+        val stepPattern = Step.InPlace
         val stepUnit = StepUnit.DistanceOne(step = stepPattern)
         val sequence = SoloSequence(
             stepUnits = listOf(stepUnit),
