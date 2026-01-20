@@ -58,8 +58,8 @@ class MovementAtlasViewModelTest {
         val stepPattern = Step(direction = Direction.IN_PLACE)
         val stepUnit = StepUnit.DistanceOne(step = stepPattern)
         val sequence = SoloSequence(
-            id = null,
-            stepUnits = listOf(stepUnit)
+            stepUnits = listOf(stepUnit),
+            id = null
         )
 
         val generateSequencesUseCase = mockk<GenerateSequencesUseCase>()

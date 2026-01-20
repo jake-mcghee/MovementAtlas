@@ -5,12 +5,16 @@ package com.example.movementatlas.domain.entity
  * Role-agnostic: the same sequence can be used for LEAD or FOLLOW dancers.
  * Weight feet are computed from stepUnits rather than stored.
  * 
- * @param id Optional identifier for persistence. Null for generated sequences.
  * @param stepUnits List of StepUnits that form this sequence.
+ * @param id Identifier for the sequence. Null for non-persisted sequences.
+ *          For user-saved sequences, assigned by repository when saved.
+ *          For common and generated sequences, null (not persisted).
+ * @param title Optional human-readable name for the sequence.
  */
 data class SoloSequence(
-    val id: String? = null,
-    val stepUnits: List<StepUnit>
+    val stepUnits: List<StepUnit>,
+    val id: Long? = null,
+    val title: String? = null
 ) {
     /**
      * Computes the ending weight foot after applying this sequence

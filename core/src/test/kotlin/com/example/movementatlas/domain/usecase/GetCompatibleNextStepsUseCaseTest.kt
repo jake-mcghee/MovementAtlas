@@ -11,9 +11,9 @@ class GetCompatibleNextStepsUseCaseTest {
         // Given
         val currentWeightFoot = WeightFoot.LEFT
 
-        val stepPattern = Step(direction = Direction.IN_PLACE)
+        val stepPattern = Step.InPlace
         val stepUnit1 = StepUnit.DistanceOne(step = stepPattern)
-        val stepUnit2 = StepUnit.DistanceTwo(step1 = stepPattern, step2 = stepPattern)
+        val stepUnit2 = StepUnit.DistanceTwo(step1 = stepPattern, step2 = stepPattern, step3 = stepPattern)
         val stepUnit3 = StepUnit.DistanceThree(step1 = stepPattern, step3 = stepPattern)
 
         val allStepUnits = listOf(stepUnit1, stepUnit2, stepUnit3)
@@ -33,7 +33,7 @@ class GetCompatibleNextStepsUseCaseTest {
     @Test
     fun `returns all step units for any weight foot since patterns are foot-agnostic`() {
         // Given
-        val stepPattern = Step(direction = Direction.IN_PLACE)
+        val stepPattern = Step.InPlace
         val stepUnit = StepUnit.DistanceOne(step = stepPattern)
 
         val useCase = GetCompatibleNextStepUnitsUseCase(listOf(stepUnit))

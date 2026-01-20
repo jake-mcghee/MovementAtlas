@@ -30,6 +30,9 @@ sealed class StepUnit {
         }
     }
 
+    /**
+     * DistanceOne: Single step with optional rotation.
+     */
     data class DistanceOne(
         val step: Step,
         override val rotation: Rotation? = null
@@ -37,24 +40,50 @@ sealed class StepUnit {
         override val steps: List<Step> = listOf(step)
     }
     
+    /**
+     * DistanceTwo: A pattern where the first foot doesn't travel again.
+     * 
+     * Pattern:
+     * 1. step1: First foot steps in a direction
+     * 2. step2: Second foot steps in a direction (nullable - can be null if there's no explicit second step)
+     * 3. step3: Weight transfers back to first foot (first foot stays in place, doesn't travel)
+     * 
+     * Step directions are relative to the dancer's orientation at that moment.
+     * 
+     * **Key Distinction from DistanceThree**: In DistanceTwo, the first foot doesn't travel again
+     * (weight just returns to it in place). In DistanceThree, the first foot travels twice.
+     */
     data class DistanceTwo(
         val step1: Step,
-        val step2: Step,
+        val step2: Step? = null,
+        val step3: Step,
+        val dominantStartingFoot: WeightFoot? = null,
         override val rotation: Rotation? = null
     ) : StepUnit() {
-        // DistanceTwo: After step2, weight returns to first foot which is IN_PLACE (doesn't travel).
-        // This is the key differentiator from DistanceThree (where first foot travels twice).
-        override val steps: List<Step> = listOf(step1, step2)
+        override val steps: List<Step> = listOfNotNull(step1, step2, step3)
     }
     
+    /**
+     * DistanceThree: A pattern where the first foot travels twice.
+     * 
+     * Pattern:
+     * 1. step1: First foot steps in a direction
+     * 2. step2: Control step (weight transfer, typically IN_PLACE) - nullable
+     * 3. step3: First foot steps again in a direction (first foot travels twice)
+     * 
+     * 
+     * **Key Distinction from DistanceTwo**: In DistanceThree, the first foot travels twice
+     * (step1 and step3 are both on the first foot). In DistanceTwo, the first foot doesn't travel again
+     * (weight just returns to it in place via step3).
+     */
     data class DistanceThree(
         val step1: Step,
+        val step2: Step? = Step.InPlace,
         val step3: Step,
+        val dominantStartingFoot: WeightFoot? = null,
         override val rotation: Rotation? = null
     ) : StepUnit() {
-        // step2 is a weight transfer - direction doesn't matter, always IN_PLACE
-        // Only step1 and step3 directions are meaningful
-        private val controlStep = Step(Direction.IN_PLACE)
+        private val controlStep = Step.InPlace
         
         override val steps: List<Step> = listOf(step1, controlStep, step3)
     }

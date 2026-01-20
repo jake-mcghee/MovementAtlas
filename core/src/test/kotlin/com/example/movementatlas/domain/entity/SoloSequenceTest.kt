@@ -8,19 +8,19 @@ class SoloSequenceTest {
     @Test
     fun `SoloSequence is created with step units`() {
         // Given
-        val stepPattern = Step(direction = Direction.IN_PLACE)
+        val stepPattern = Step.InPlace
         val stepUnit1 = StepUnit.DistanceOne(step = stepPattern)
         val stepUnit2 = StepUnit.DistanceOne(step = stepPattern)
         val stepUnits = listOf(stepUnit1, stepUnit2)
         
         // When
         val sequence = SoloSequence(
-            id = null,
-            stepUnits = stepUnits
+            stepUnits = stepUnits,
+            id = null
         )
         
         // Then
-        assertEquals(null, sequence.id)
+        assertNull(sequence.id)
         assertEquals(stepUnits, sequence.stepUnits)
     }
 
@@ -28,24 +28,24 @@ class SoloSequenceTest {
     fun `Empty solo sequence is valid`() {
         // When
         val sequence = SoloSequence(
-            id = null,
-            stepUnits = emptyList()
+            stepUnits = emptyList(),
+            id = null
         )
         
         // Then
-        assertEquals(null, sequence.id)
+        assertNull(sequence.id)
         assertTrue(sequence.stepUnits.isEmpty())
     }
 
     @Test
     fun `computeEndWeightFoot computes correct end foot from start foot`() {
         // Given
-        val stepPattern = Step(direction = Direction.IN_PLACE)
+        val stepPattern = Step.InPlace
         val stepUnit1 = StepUnit.DistanceOne(step = stepPattern)
         val stepUnit2 = StepUnit.DistanceOne(step = stepPattern)
         val sequence = SoloSequence(
-            id = null,
-            stepUnits = listOf(stepUnit1, stepUnit2)
+            stepUnits = listOf(stepUnit1, stepUnit2),
+            id = null
         )
         val startWeightFoot = WeightFoot.LEFT
         
@@ -61,8 +61,8 @@ class SoloSequenceTest {
     fun `computeEndWeightFoot for empty sequence returns start foot`() {
         // Given
         val sequence = SoloSequence(
-            id = null,
-            stepUnits = emptyList()
+            stepUnits = emptyList(),
+            id = null
         )
         val startWeightFoot = WeightFoot.RIGHT
         

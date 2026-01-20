@@ -9,7 +9,7 @@ class GetStepUnitEntriesUseCaseTest {
     @Test
     fun `returns all weight feet that can transition from step unit`() {
         // Given
-        val stepPattern = Step(direction = Direction.IN_PLACE)
+        val stepPattern = Step.InPlace
         val stepUnit = StepUnit.DistanceOne(step = stepPattern)
 
         val useCase = GetStepUnitEntriesUseCase()
@@ -26,9 +26,9 @@ class GetStepUnitEntriesUseCaseTest {
     @Test
     fun `returns both feet for any step unit pattern`() {
         // Given
-        val stepPattern = Step(direction = Direction.IN_PLACE)
+        val stepPattern = Step.InPlace
         val stepUnit1 = StepUnit.DistanceOne(step = stepPattern)
-        val stepUnit2 = StepUnit.DistanceTwo(step1 = stepPattern, step2 = stepPattern)
+        val stepUnit2 = StepUnit.DistanceTwo(step1 = stepPattern, step2 = stepPattern, step3 = stepPattern)
         val stepUnit3 = StepUnit.DistanceThree(step1 = stepPattern, step3 = stepPattern)
 
         val useCase = GetStepUnitEntriesUseCase()

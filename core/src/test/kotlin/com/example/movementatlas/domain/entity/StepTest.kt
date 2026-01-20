@@ -6,21 +6,18 @@ import org.junit.Test
 class StepTest {
 
     @Test
-    fun `Step pattern is created with direction only`() {
-        // Given
-        val direction = Direction.IN_PLACE
-        
+    fun `Step has direction property`() {
         // When
-        val step = Step(direction = direction)
+        val step = Step.InPlace
         
         // Then
-        assertEquals(direction, step.direction)
+        assertEquals(Direction.IN_PLACE, step.direction)
     }
 
     @Test
     fun `Step endingFoot is always opposite of startingFoot`() {
         // Given
-        val step = Step(direction = Direction.IN_PLACE)
+        val step = Step.InPlace
         
         // When/Then
         assertEquals(WeightFoot.RIGHT, step.endingFoot(WeightFoot.LEFT))
@@ -28,14 +25,24 @@ class StepTest {
     }
 
     @Test
-    fun `Step equality is based on direction`() {
+    fun `Step equality is based on instance`() {
         // Given
-        val step1 = Step(direction = Direction.IN_PLACE)
-        val step2 = Step(direction = Direction.IN_PLACE)
-        val step3 = Step(direction = Direction.FORWARD)
+        val step1 = Step.InPlace
+        val step2 = Step.InPlace
+        val step3 = Step.Forward
         
         // Then
-        assertEquals(step1, step2) // Same direction = equal
-        assertNotEquals(step1, step3) // Different direction = not equal
+        assertEquals(step1, step2) // Same instance = equal
+        assertNotEquals(step1, step3) // Different instance = not equal
+    }
+    
+    @Test
+    fun `Step from creates correct Step from Direction`() {
+        // When/Then
+        assertEquals(Step.InPlace, Step.from(Direction.IN_PLACE))
+        assertEquals(Step.Forward, Step.from(Direction.FORWARD))
+        assertEquals(Step.Backward, Step.from(Direction.BACKWARD))
+        assertEquals(Step.Left, Step.from(Direction.LEFT))
+        assertEquals(Step.Right, Step.from(Direction.RIGHT))
     }
 }

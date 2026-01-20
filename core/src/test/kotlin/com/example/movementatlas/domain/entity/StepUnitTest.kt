@@ -8,7 +8,7 @@ class StepUnitTest {
     @Test
     fun `StepUnit is created with 1-3 steps`() {
         // Given
-        val stepPattern = Step(direction = Direction.IN_PLACE)
+        val stepPattern = Step.InPlace
         
         // When
         val singleStepUnit = StepUnit.DistanceOne(step = stepPattern)
@@ -25,12 +25,13 @@ class StepUnitTest {
     @Test
     fun `StepUnit patterns can be created with any step patterns`() {
         // Given
-        val stepPattern = Step(direction = Direction.IN_PLACE)
+        val stepPattern = Step.InPlace
         
         // When/Then - patterns always chain correctly when applied
         val stepUnit = StepUnit.DistanceTwo(
             step1 = stepPattern,
-            step2 = stepPattern
+            step2 = stepPattern,
+            step3 = stepPattern
         )
         
         // Verify it computes correctly from LEFT - ends on opposite foot
@@ -42,8 +43,8 @@ class StepUnitTest {
     @Test
     fun `StepUnit equality is based on all properties`() {
         // Given
-        val stepPattern = Step(direction = Direction.IN_PLACE)
-        val differentStepPattern = Step(direction = Direction.FORWARD)
+        val stepPattern = Step.InPlace
+        val differentStepPattern = Step.Forward
         val stepUnit1 = StepUnit.DistanceOne(step = stepPattern)
         val stepUnit2 = StepUnit.DistanceOne(step = stepPattern)
         val stepUnit3 = StepUnit.DistanceOne(step = differentStepPattern)
@@ -56,10 +57,11 @@ class StepUnitTest {
     @Test
     fun `StepUnit computePostState calculates correctly`() {
         // Given
-        val stepPattern = Step(direction = Direction.IN_PLACE)
+        val stepPattern = Step.InPlace
         val stepUnit = StepUnit.DistanceTwo(
             step1 = stepPattern,
-            step2 = stepPattern
+            step2 = stepPattern,
+            step3 = stepPattern
         )
         
         // When starting from LEFT: ends on opposite foot (RIGHT)
@@ -73,25 +75,42 @@ class StepUnitTest {
     }
 
     @Test
-    fun `DistanceTwo stores both step1 and step2 with meaningful directions`() {
+    fun `DistanceTwo stores step1, step2, and step3 with meaningful directions`() {
         // Given
-        val step1 = Step(direction = Direction.FORWARD)
-        val step2 = Step(direction = Direction.BACKWARD)
+        val step1 = Step.Forward
+        val step2 = Step.Backward
+        val step3 = Step.Forward
         
         // When
-        val stepUnit = StepUnit.DistanceTwo(step1 = step1, step2 = step2)
+        val stepUnit = StepUnit.DistanceTwo(step1 = step1, step2 = step2, step3 = step3)
         
-        // Then - both steps are stored and accessible
-        assertEquals(2, stepUnit.steps.size)
+        // Then - all steps are stored and accessible
+        assertEquals(3, stepUnit.steps.size)
         assertEquals(step1, stepUnit.steps[0])
         assertEquals(step2, stepUnit.steps[1])
+        assertEquals(step3, stepUnit.steps[2])
+    }
+    
+    @Test
+    fun `DistanceTwo with null step2 only stores step1 and step3`() {
+        // Given
+        val step1 = Step.Forward
+        val step3 = Step.Backward
+        
+        // When
+        val stepUnit = StepUnit.DistanceTwo(step1 = step1, step2 = null, step3 = step3)
+        
+        // Then - step2 is omitted from steps list
+        assertEquals(2, stepUnit.steps.size)
+        assertEquals(step1, stepUnit.steps[0])
+        assertEquals(step3, stepUnit.steps[1])
     }
 
     @Test
     fun `DistanceTwo always ends on opposite foot from starting foot`() {
         // Given
-        val stepPattern = Step(direction = Direction.IN_PLACE)
-        val stepUnit = StepUnit.DistanceTwo(step1 = stepPattern, step2 = stepPattern)
+        val stepPattern = Step.InPlace
+        val stepUnit = StepUnit.DistanceTwo(step1 = stepPattern, step2 = stepPattern, step3 = stepPattern)
         
         // When/Then - from LEFT ends on RIGHT
         assertEquals(WeightFoot.RIGHT, stepUnit.computePostState(WeightFoot.LEFT))
@@ -102,8 +121,8 @@ class StepUnitTest {
     @Test
     fun `DistanceThree only stores step1 and step3 step2 is computed internally`() {
         // Given
-        val step1 = Step(direction = Direction.FORWARD)
-        val step3 = Step(direction = Direction.BACKWARD)
+        val step1 = Step.Forward
+        val step3 = Step.Backward
         
         // When
         val stepUnit = StepUnit.DistanceThree(step1 = step1, step3 = step3)
@@ -118,8 +137,8 @@ class StepUnitTest {
     @Test
     fun `DistanceThree step2 is always IN_PLACE regardless of input`() {
         // Given - step2 is computed internally, so it's always the same
-        val step1 = Step(direction = Direction.FORWARD)
-        val step3 = Step(direction = Direction.BACKWARD)
+        val step1 = Step.Forward
+        val step3 = Step.Backward
         
         // When - create two DistanceThree with same step1 and step3
         val stepUnit1 = StepUnit.DistanceThree(step1 = step1, step3 = step3)
@@ -134,9 +153,9 @@ class StepUnitTest {
     @Test
     fun `all StepUnit types end on opposite foot from starting foot`() {
         // Given
-        val stepPattern = Step(direction = Direction.IN_PLACE)
+        val stepPattern = Step.InPlace
         val distanceOne = StepUnit.DistanceOne(step = stepPattern)
-        val distanceTwo = StepUnit.DistanceTwo(step1 = stepPattern, step2 = stepPattern)
+        val distanceTwo = StepUnit.DistanceTwo(step1 = stepPattern, step2 = stepPattern, step3 = stepPattern)
         val distanceThree = StepUnit.DistanceThree(step1 = stepPattern, step3 = stepPattern)
         
         // When/Then - DistanceOne from LEFT ends on RIGHT

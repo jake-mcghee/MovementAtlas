@@ -22,7 +22,6 @@ class GenerateSequencesUseCase(
             if (compatibleStepUnits.isEmpty() || depth >= maxLength) {
                 if (currentSequence.isNotEmpty()) {
                     sequences.add(SoloSequence(
-                        id = null,
                         stepUnits = currentSequence
                     ))
                 }
@@ -35,7 +34,6 @@ class GenerateSequencesUseCase(
                 val newSequence = currentSequence + stepUnit
                 // Add sequence at each step unit
                 sequences.add(SoloSequence(
-                    id = null,
                     stepUnits = newSequence
                 ))
                 // Continue generating from next weight foot

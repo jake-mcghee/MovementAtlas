@@ -14,7 +14,7 @@ class GenerateSequencesUseCaseTest {
         val startWeightFoot = WeightFoot.LEFT
         val maxLength = 2
 
-        val stepPattern = Step(direction = Direction.IN_PLACE)
+        val stepPattern = Step.InPlace
         val stepUnit1 = StepUnit.DistanceOne(step = stepPattern)
         val stepUnit2 = StepUnit.DistanceOne(step = stepPattern)
 
@@ -41,7 +41,7 @@ class GenerateSequencesUseCaseTest {
         val startWeightFoot = WeightFoot.LEFT
         val maxLength = 1
 
-        val stepPattern = Step(direction = Direction.IN_PLACE)
+        val stepPattern = Step.InPlace
         val stepUnit = StepUnit.DistanceOne(step = stepPattern)
 
         val useCase = GenerateSequencesUseCase(listOf(stepUnit))
@@ -59,7 +59,7 @@ class GenerateSequencesUseCaseTest {
     fun `generates sequences with correct state transitions`() = runTest {
         // Given
         val startWeightFoot = WeightFoot.LEFT
-        val stepPattern = Step(direction = Direction.IN_PLACE)
+        val stepPattern = Step.InPlace
         val stepUnit = StepUnit.DistanceOne(step = stepPattern)
 
         val useCase = GenerateSequencesUseCase(listOf(stepUnit))
@@ -82,9 +82,9 @@ class GenerateSequencesUseCaseTest {
     fun `generates multiple sequences when multiple step units available`() = runTest {
         // Given
         val startWeightFoot = WeightFoot.LEFT
-        val stepPattern = Step(direction = Direction.IN_PLACE)
+        val stepPattern = Step.InPlace
         val stepUnit1 = StepUnit.DistanceOne(step = stepPattern)
-        val stepUnit2 = StepUnit.DistanceTwo(step1 = stepPattern, step2 = stepPattern)
+        val stepUnit2 = StepUnit.DistanceTwo(step1 = stepPattern, step2 = stepPattern, step3 = stepPattern)
         val stepUnit3 = StepUnit.DistanceThree(step1 = stepPattern, step3 = stepPattern)
 
         val useCase = GenerateSequencesUseCase(listOf(stepUnit1, stepUnit2, stepUnit3))

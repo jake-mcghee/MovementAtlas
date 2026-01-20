@@ -9,7 +9,7 @@ class GetStepUnitExitsUseCaseTest {
     @Test
     fun `returns resulting weight feet by applying step unit to all valid entry states`() {
         // Given
-        val stepPattern = Step(direction = Direction.IN_PLACE)
+        val stepPattern = Step.InPlace
         val stepUnit = StepUnit.DistanceOne(step = stepPattern)
 
         val useCase = GetStepUnitExitsUseCase()
@@ -26,8 +26,8 @@ class GetStepUnitExitsUseCaseTest {
     @Test
     fun `returns correct exit states for DistanceTwo pattern`() {
         // Given
-        val stepPattern = Step(direction = Direction.IN_PLACE)
-        val stepUnit = StepUnit.DistanceTwo(step1 = stepPattern, step2 = stepPattern)
+        val stepPattern = Step.InPlace
+        val stepUnit = StepUnit.DistanceTwo(step1 = stepPattern, step2 = stepPattern, step3 = stepPattern)
 
         val useCase = GetStepUnitExitsUseCase()
 
@@ -43,7 +43,7 @@ class GetStepUnitExitsUseCaseTest {
     @Test
     fun `returns correct exit states for DistanceThree pattern`() {
         // Given
-        val stepPattern = Step(direction = Direction.IN_PLACE)
+        val stepPattern = Step.InPlace
         val stepUnit = StepUnit.DistanceThree(step1 = stepPattern, step3 = stepPattern)
 
         val useCase = GetStepUnitExitsUseCase()
@@ -60,8 +60,8 @@ class GetStepUnitExitsUseCaseTest {
     @Test
     fun `returns unique exit states`() {
         // Given
-        val stepPattern = Step(direction = Direction.IN_PLACE)
-        val stepUnit = StepUnit.DistanceTwo(step1 = stepPattern, step2 = stepPattern)
+        val stepPattern = Step.InPlace
+        val stepUnit = StepUnit.DistanceTwo(step1 = stepPattern, step2 = stepPattern, step3 = stepPattern)
 
         val useCase = GetStepUnitExitsUseCase()
 

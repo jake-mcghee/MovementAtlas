@@ -1,7 +1,6 @@
 package com.example.movementatlas.di
 
-import com.example.movementatlas.domain.data.DefaultStepProvider
-import com.example.movementatlas.domain.data.DefaultStepUnitProvider
+import com.example.movementatlas.domain.data.DefaultSoloSequenceProvider
 import com.example.movementatlas.domain.entity.StepUnit
 import com.example.movementatlas.domain.usecase.GenerateSequencesUseCase
 import com.example.movementatlas.domain.usecase.GetCompatibleNextStepUnitsUseCase
@@ -20,8 +19,7 @@ object AppModule {
     @Provides
     @Singleton
     fun provideStepUnits(): List<@JvmSuppressWildcards StepUnit> {
-        val steps = DefaultStepProvider.getDefaultSteps()
-        return DefaultStepUnitProvider.getDefaultStepUnits(steps)
+        return DefaultSoloSequenceProvider.getCommonStepUnits()
     }
 
     @Provides
