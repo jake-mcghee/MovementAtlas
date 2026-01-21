@@ -92,7 +92,7 @@ class StepUnitTest {
     }
     
     @Test
-    fun `DistanceTwo with null step2 only stores step1 and step3`() {
+    fun `DistanceTwo with null step2 uses InPlace as control step`() {
         // Given
         val step1 = Step.Forward
         val step3 = Step.Backward
@@ -100,10 +100,11 @@ class StepUnitTest {
         // When
         val stepUnit = StepUnit.DistanceTwo(step1 = step1, step2 = null, step3 = step3)
         
-        // Then - step2 is omitted from steps list
-        assertEquals(2, stepUnit.steps.size)
+        // Then - step2 is replaced with InPlace control step
+        assertEquals(3, stepUnit.steps.size)
         assertEquals(step1, stepUnit.steps[0])
-        assertEquals(step3, stepUnit.steps[1])
+        assertEquals(Step.InPlace, stepUnit.steps[1])
+        assertEquals(step3, stepUnit.steps[2])
     }
 
     @Test

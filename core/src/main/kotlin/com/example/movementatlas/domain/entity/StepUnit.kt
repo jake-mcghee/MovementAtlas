@@ -13,6 +13,11 @@ sealed class StepUnit {
     abstract val rotation: Rotation?
     
     /**
+     * Optional human-readable title for this step unit.
+     */
+    abstract val title: String?
+    
+    /**
      * Helper property to access step patterns as a list.
      */
     abstract val steps: List<Step>
@@ -35,7 +40,8 @@ sealed class StepUnit {
      */
     data class DistanceOne(
         val step: Step,
-        override val rotation: Rotation? = null
+        override val rotation: Rotation? = null,
+        override val title: String? = null
     ) : StepUnit() {
         override val steps: List<Step> = listOf(step)
     }
@@ -59,7 +65,8 @@ sealed class StepUnit {
         val step3: Step,
         val dominantStartingFoot: WeightFoot? = null,
         val rotationGoesInTheDirectionOfTheFirstSteppingFoot: Boolean = true,
-        override val rotation: Rotation? = null
+        override val rotation: Rotation? = null,
+        override val title: String? = null
     ) : StepUnit() {
         private val controlStep = step2 ?: Step.InPlace
         override val steps: List<Step> = listOfNotNull(step1, controlStep, step3)
@@ -83,7 +90,8 @@ sealed class StepUnit {
         val step2: Step? = Step.InPlace,
         val step3: Step,
         val dominantStartingFoot: WeightFoot? = null,
-        override val rotation: Rotation? = null
+        override val rotation: Rotation? = null,
+        override val title: String? = null
     ) : StepUnit() {
         private val controlStep = step2 ?: Step.InPlace
 

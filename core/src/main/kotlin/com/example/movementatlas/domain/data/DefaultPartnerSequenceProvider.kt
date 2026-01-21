@@ -18,23 +18,29 @@ object DefaultPartnerSequenceProvider {
      * @return List of common PartnerSequence objects with titles but null IDs.
      */
     fun getCommonPartnerSequences(): List<PartnerSequence> {
-        // Reference solo sequences directly via functions (type-safe, no string lookups)
-        val basicStep = DefaultSoloSequenceProvider.basicStepInPlace()
+        // Reference step units directly from DefaultStepUnitProvider (type-safe, no string lookups)
+        val basicStepUnit = DefaultStepUnitProvider.basicStepInPlace()
         
         // Compose Linear Basic from halves (same pattern, different starting point)
-        val forwardHalf = DefaultSoloSequenceProvider.linearBasicForwardHalf()
-        val backwardHalf = DefaultSoloSequenceProvider.linearBasicBackwardHalf()
+        val forwardHalfStepUnit = DefaultStepUnitProvider.linearBasicForwardHalf()
+        val backwardHalfStepUnit = DefaultStepUnitProvider.linearBasicBackwardHalf()
         
         // Follow: forward half + backward half
         val linearBasicForFollow = SoloSequence(
-            stepUnits = forwardHalf.stepUnits + backwardHalf.stepUnits,
+            stepUnits = listOf(forwardHalfStepUnit, backwardHalfStepUnit),
             title = "Linear Basic Forward"
         )
         
         // Lead: backward half + forward half (same pattern, different starting point)
         val linearBasicForLead = SoloSequence(
-            stepUnits = backwardHalf.stepUnits + forwardHalf.stepUnits,
+            stepUnits = listOf(backwardHalfStepUnit, forwardHalfStepUnit),
             title = "Linear Basic Backwards"
+        )
+        
+        // Basic step sequence for both dancers
+        val basicStep = SoloSequence(
+            stepUnits = listOf(basicStepUnit),
+            title = basicStepUnit.title
         )
         
         return listOf(
