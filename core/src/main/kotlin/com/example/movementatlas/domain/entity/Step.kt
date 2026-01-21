@@ -31,12 +31,8 @@ sealed class Step {
         override val direction = Direction.BACKWARD
     }
     
-    object Left : Step() {
-        override val direction = Direction.LEFT
-    }
-    
-    object Right : Step() {
-        override val direction = Direction.RIGHT
+    object Side : Step() {
+        override val direction = Direction.SIDE
     }
     
     companion object {
@@ -47,8 +43,7 @@ sealed class Step {
             Direction.IN_PLACE -> InPlace
             Direction.FORWARD -> Forward
             Direction.BACKWARD -> Backward
-            Direction.LEFT -> Left
-            Direction.RIGHT -> Right
+            Direction.SIDE -> Side
         }
     }
 }

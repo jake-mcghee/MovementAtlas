@@ -58,9 +58,11 @@ sealed class StepUnit {
         val step2: Step? = null,
         val step3: Step,
         val dominantStartingFoot: WeightFoot? = null,
+        val rotationGoesInTheDirectionOfTheFirstSteppingFoot: Boolean = true,
         override val rotation: Rotation? = null
     ) : StepUnit() {
-        override val steps: List<Step> = listOfNotNull(step1, step2, step3)
+        private val controlStep = step2 ?: Step.InPlace
+        override val steps: List<Step> = listOfNotNull(step1, controlStep, step3)
     }
     
     /**
@@ -83,8 +85,8 @@ sealed class StepUnit {
         val dominantStartingFoot: WeightFoot? = null,
         override val rotation: Rotation? = null
     ) : StepUnit() {
-        private val controlStep = Step.InPlace
-        
+        private val controlStep = step2 ?: Step.InPlace
+
         override val steps: List<Step> = listOf(step1, controlStep, step3)
     }
 }

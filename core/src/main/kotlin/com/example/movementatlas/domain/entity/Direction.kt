@@ -6,7 +6,6 @@ package com.example.movementatlas.domain.entity
 enum class Direction {
     FORWARD,
     BACKWARD,
-    LEFT,
-    RIGHT,
+    SIDE,
     IN_PLACE
 }

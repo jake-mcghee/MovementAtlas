@@ -42,7 +42,6 @@ class StepTest {
         assertEquals(Step.InPlace, Step.from(Direction.IN_PLACE))
         assertEquals(Step.Forward, Step.from(Direction.FORWARD))
         assertEquals(Step.Backward, Step.from(Direction.BACKWARD))
-        assertEquals(Step.Left, Step.from(Direction.LEFT))
-        assertEquals(Step.Right, Step.from(Direction.RIGHT))
+        assertEquals(Step.Side, Step.from(Direction.SIDE))
     }
 }
