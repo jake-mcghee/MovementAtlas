@@ -14,57 +14,75 @@ class DefaultPartnerSequenceProviderTest {
         // Then
         assertTrue("Should return at least one partner sequence", partnerSequences.isNotEmpty())
         partnerSequences.forEach { partnerSequence ->
-            assertNotNull("Lead sequence should not be null", partnerSequence.leadSequence)
-            assertNotNull("Follow sequence should not be null", partnerSequence.followSequence)
-            assertTrue("Lead sequence should have step units", partnerSequence.leadSequence.stepUnits.isNotEmpty())
-            assertTrue("Follow sequence should have step units", partnerSequence.followSequence.stepUnits.isNotEmpty())
+            assertTrue("Should have partner step units", partnerSequence.partnerStepUnits.isNotEmpty())
+            assertTrue("Lead should have step units", partnerSequence.leadStepUnits.isNotEmpty())
+            assertTrue("Follow should have step units", partnerSequence.followStepUnits.isNotEmpty())
         }
     }
 
     @Test
-    fun `getCommonPartnerSequences includes sequences with matching solo sequences`() {
+    fun `getCommonPartnerSequences includes sequences with step units`() {
         // When
         val partnerSequences = DefaultPartnerSequenceProvider.getCommonPartnerSequences()
-        val commonSoloSequences = DefaultSoloSequenceProvider.getCommonSequences()
 
         // Then
         assertTrue("Should have partner sequences", partnerSequences.isNotEmpty())
-        // Verify that partner sequences can reference common solo sequences
+        // Verify that partner sequences have valid step units
         partnerSequences.forEach { partnerSequence ->
-            // Both lead and follow sequences should be valid
-            assertNotNull(partnerSequence.leadSequence)
-            assertNotNull(partnerSequence.followSequence)
+            // Both lead and follow should have step units
+            assertTrue("Lead should have step units", partnerSequence.leadStepUnits.isNotEmpty())
+            assertTrue("Follow should have step units", partnerSequence.followStepUnits.isNotEmpty())
         }
     }
 
     @Test
-    fun `partner sequences have valid lead and follow sequences`() {
+    fun `partner sequences can compute end weight foot for lead and follow`() {
         // Given
         val partnerSequences = DefaultPartnerSequenceProvider.getCommonPartnerSequences()
-        val startWeightFoot = WeightFoot.LEFT
 
         // When & Then
         partnerSequences.forEach { partnerSequence ->
-            // Both sequences should be able to compute end weight foot
-            val leadEndFoot = partnerSequence.leadSequence.computeEndWeightFoot(startWeightFoot)
-            val followEndFoot = partnerSequence.followSequence.computeEndWeightFoot(startWeightFoot)
+            // Both lead and follow should be able to compute end weight foot using default starting feet
+            val leadEndFoot = partnerSequence.computeLeadEndWeightFoot()
+            val followEndFoot = partnerSequence.computeFollowEndWeightFoot()
             
-            assertNotNull("Lead sequence should compute end foot", leadEndFoot)
-            assertNotNull("Follow sequence should compute end foot", followEndFoot)
+            assertNotNull("Lead should compute end foot", leadEndFoot)
+            assertNotNull("Follow should compute end foot", followEndFoot)
+            
+            // Also test with explicit initial weight feet
+            val leadEndFootExplicit = partnerSequence.computeLeadEndWeightFoot(partnerSequence.leadInitialWeightFoot)
+            val followEndFootExplicit = partnerSequence.computeFollowEndWeightFoot(partnerSequence.followInitialWeightFoot)
+            
+            assertEquals("Should get same result with explicit starting foot", leadEndFoot, leadEndFootExplicit)
+            assertEquals("Should get same result with explicit starting foot", followEndFoot, followEndFootExplicit)
         }
     }
 
     @Test
-    fun `partner sequences can have same sequence for lead and follow`() {
+    fun `partner sequences can have same step units for lead and follow`() {
         // When
         val partnerSequences = DefaultPartnerSequenceProvider.getCommonPartnerSequences()
 
         // Then
-        // It's valid for lead and follow to have the same sequence (symmetric patterns)
+        // It's valid for lead and follow to have the same step units (symmetric patterns)
         partnerSequences.forEach { partnerSequence ->
-            // This is allowed - same sequence for both roles
-            assertNotNull(partnerSequence.leadSequence)
-            assertNotNull(partnerSequence.followSequence)
+            // This is allowed - same step units for both roles
+            assertTrue("Should have partner step units", partnerSequence.partnerStepUnits.isNotEmpty())
+            assertTrue("Lead should have step units", partnerSequence.leadStepUnits.isNotEmpty())
+            assertTrue("Follow should have step units", partnerSequence.followStepUnits.isNotEmpty())
+        }
+    }
+
+    @Test
+    fun `partner sequences have correct initial weight feet`() {
+        // When
+        val partnerSequences = DefaultPartnerSequenceProvider.getCommonPartnerSequences()
+
+        // Then
+        // Standard convention: Lead's first step is LEFT (weight on RIGHT), Follow's first step is RIGHT (weight on LEFT)
+        partnerSequences.forEach { partnerSequence ->
+            assertEquals("Lead should have weight on RIGHT initially (first step is LEFT)", WeightFoot.RIGHT, partnerSequence.leadInitialWeightFoot)
+            assertEquals("Follow should have weight on LEFT initially (first step is RIGHT)", WeightFoot.LEFT, partnerSequence.followInitialWeightFoot)
         }
     }
 }

@@ -39,7 +39,6 @@ object DefaultStepUnitProvider {
         threeStepsForward(),
         threeStepsBackward(),
         sideStep(),
-        leadersLateralStep(),
         sideBalanco(),
         forwardsPrepTurn(),
         backwardsPrepTurn(),
@@ -53,7 +52,9 @@ object DefaultStepUnitProvider {
         abertura(),
         threeStepTurnToTheFront180(),
         threeStepTurnToTheSide180(),
-        threeStepTurnToTheSide360()
+        threeStepTurnToTheSide360(),
+        leadersViradinha(),
+        leadersLateralStep()
     )
 
     // ============================================================================
@@ -121,6 +122,15 @@ object DefaultStepUnitProvider {
         step2 = Step.Backward,
         step3 = Step.Forward,
         title = "Side Step"
+    )
+
+    internal fun leadersViradinha() = StepUnit.DistanceThree(
+        step1 = Step.Backward,
+        step2 = Step.Backward,
+        step3 = Step.Side,
+        rotation = Rotation.ROTATION_90,
+        rotationGoesInTheDirectionOfTheFirstSteppingFoot = false,
+        title = "Leaders Viradinha"
     )
 
     internal fun leadersLateralStep() = StepUnit.DistanceTwo(

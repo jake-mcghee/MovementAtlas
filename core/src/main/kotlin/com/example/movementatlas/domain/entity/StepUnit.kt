@@ -90,6 +90,7 @@ sealed class StepUnit {
         val step2: Step? = Step.InPlace,
         val step3: Step,
         val dominantStartingFoot: WeightFoot? = null,
+        val rotationGoesInTheDirectionOfTheFirstSteppingFoot: Boolean = true,
         override val rotation: Rotation? = null,
         override val title: String? = null
     ) : StepUnit() {
